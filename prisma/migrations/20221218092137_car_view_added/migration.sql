@@ -1,0 +1,17 @@
+-- CreateTable
+CREATE TABLE "CarView" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "carId" INTEGER NOT NULL,
+    "device" "Device" NOT NULL DEFAULT 'ANDROID',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "CarView_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "CarView" ADD CONSTRAINT "CarView_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "CarView" ADD CONSTRAINT "CarView_carId_fkey" FOREIGN KEY ("carId") REFERENCES "Car"("id") ON DELETE CASCADE ON UPDATE NO ACTION;

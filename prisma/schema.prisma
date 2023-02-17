@@ -1,0 +1,552 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// prisma/schema.prisma
+
+model Article {
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
+  description String?
+  body        String
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Users {
+  id           Int            @id @default(autoincrement())
+  fullname     String?
+  phonenumber  String         @unique
+  username     String
+  password     String
+  dob          DateTime?
+  status       UserStatus     @default(USER)
+  image        String?
+  cars         Car[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  carShare     CarShare[]
+  inbox        Inbox[]
+  PageViews    PageViews[]
+  Events       Events[]
+  LoginHistory LoginHistory[]
+  FCMToken     FCMToken[]
+  CarView      CarView[]
+}
+
+model CarShare {
+  id          Int         @id @default(autoincrement())
+  user        Users       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  userId      Int
+  car         Car         @relation(fields: [carId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  carId       Int
+  permissions Permissions @default(NONE)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model CarBrand {
+  id          Int        @id @default(autoincrement())
+  name        String
+  image       String     @default("")
+  description String?
+  status      ItemStatus @default(PENDING)
+  models      CarModel[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model CarModel {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  status      ItemStatus @default(PENDING)
+  brand       CarBrand   @relation(fields: [brandId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  brandId     Int
+  cars        Car[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model CarOption {
+  id          Int        @id @default(autoincrement())
+  name_tm     String
+  name_ru     String
+  status      ItemStatus @default(PENDING)
+  description String?
+  cars        Car[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model CarEngine {
+  id          Int        @id @default(autoincrement())
+  name_tm     String
+  name_ru     String
+  status      ItemStatus @default(PENDING)
+  description String?
+  cars        Car[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model CarTransmition {
+  id          Int        @id @default(autoincrement())
+  name_tm     String
+  name_ru     String
+  status      ItemStatus @default(PENDING)
+  description String?
+  cars        Car[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model CarImage {
+  id        Int        @id @default(autoincrement())
+  url       String
+  status    ItemStatus @default(ACTIVE)
+  type      ImageType  @default(NONE)
+  car       Car        @relation(fields: [carId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  carId     Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Car {
+  id             Int            @id @default(autoincrement())
+  name           String
+  status         ItemStatus     @default(ACTIVE)
+  carModel       CarModel?      @relation(fields: [modelId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  modelId        Int
+  carOption      CarOption      @relation(fields: [optionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  optionId       Int
+  carEngineType  CarEngine      @relation(fields: [engineTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  engineTypeId   Int
+  enginePower    Float
+  carTransmition CarTransmition @relation(fields: [transmitionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  transmitionId  Int
+  year           Int
+  lastMile       Float
+  vinCode        String
+  phoneNumber    String
+  images         CarImage[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @default(now())
+  costFuel       CostFuel[]
+  users          Users?         @relation(fields: [usersId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  usersId        Int?
+  carShare       CarShare[]
+  costRepair     CostRepair[]
+  costChange     CostChange[]
+  CarView        CarView[]
+}
+
+model CostFuel {
+  id        Int      @id @default(autoincrement())
+  volume    Float
+  price     Float
+  mile      Float
+  car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  carId     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CostRepair {
+  id          Int      @id @default(autoincrement())
+  mile        Float
+  price       Float
+  description String
+  car         Car      @relation(fields: [carId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  carId       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ChangeType {
+  id         Int          @id @default(autoincrement())
+  name_tm    String
+  name_ru    String
+  costChange CostChange[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model CostChange {
+  id          Int        @id @default(autoincrement())
+  mile        Float
+  price       Float
+  description String
+  nextMile    Float
+  reminder    Boolean    @default(false)
+  car         Car        @relation(fields: [carId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  carId       Int
+  changeType  ChangeType @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  typeId      Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Region {
+  id          Int         @id @default(autoincrement())
+  name_tm     String      @unique
+  name_ru     String      @unique
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  subRegion   SubRegion[]
+}
+
+model SubRegion {
+  id          Int         @id @default(autoincrement())
+  name_tm     String      @unique
+  name_ru     String      @unique
+  description String?
+  region      Region      @relation(fields: [regionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  regionId    Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  evacuator   Evacuator[]
+  objects     Objects[]
+}
+
+model Evacuator {
+  id          Int        @id @default(autoincrement())
+  phoneNumber String
+  subRegion   SubRegion  @relation(fields: [subRegionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  subRegionId Int
+  status      ItemStatus @default(ACTIVE)
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model AdsImage {
+  id        Int        @id @default(autoincrement())
+  url       String
+  type      ImageType  @default(NONE)
+  status    ItemStatus @default(ACTIVE)
+  ads       Ads        @relation(fields: [adsId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  adsId     Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Ads {
+  id        Int        @id @default(autoincrement())
+  titleTm   String
+  titleRu   String
+  index     Int        @default(0)
+  status    ItemStatus @default(ACTIVE)
+  adsType   AdsStatus  @default(NONE)
+  adsImage  AdsImage[]
+  url       String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Inbox {
+  id        Int      @id @default(autoincrement())
+  titleTm   String
+  titleRu   String
+  messageTm String
+  messageRu String
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  userId    Int
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Objects {
+  id             Int          @id @default(autoincrement())
+  name_tm        String
+  name_ru        String
+  address_tm     String
+  address_ru     String
+  phoneNumber    String[]
+  image          String?
+  logo           String
+  status         ObjectStatus @default(FREE)
+  type           ObjectType   @default(SERVICE)
+  description_tm String?
+  description_ru String?
+  latitude       String
+  longitude      String
+  instagram      String
+  webUrl         String
+  workerLimit    Int          @default(-1)
+  subRegion      SubRegion    @relation(fields: [subRegionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subRegionId    Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model ObjectUser {
+  id          Int            @id @default(autoincrement())
+  fullname    String
+  username    String
+  password    String
+  phoneNumber String[]
+  status      ObjectStatus   @default(PENDING)
+  type        ObjectUserType @relation(fields: [typeId], references: [uniqueId], onDelete: Cascade, onUpdate: NoAction)
+  typeId      String
+  uniqueId    String         @unique
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model ObjectMaster {
+  id          Int          @id @default(autoincrement())
+  fullname    String
+  username    String
+  password    String
+  phoneNumber String[]
+  workerPrice Float
+  status      ObjectStatus @default(PENDING)
+  type        MasterStatus @relation(fields: [typeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  typeId      Int
+  uniqueId    String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model ObjectUserType {
+  id          Int                 @id @default(autoincrement())
+  name        String
+  status      ItemStatus          @default(ACTIVE)
+  description String?
+  permissions ObjectPermissions[] @default([NONE])
+  objectUser  ObjectUser[]
+  uniqueId    String              @unique
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model MasterStatus {
+  id             Int            @id @default(autoincrement())
+  name_tm        String
+  name_ru        String
+  description_tm String
+  description_ru String
+  statusPrice    Float          @default(0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  objectMaster   ObjectMaster[]
+}
+
+model Constants {
+  id         Int      @id @default(autoincrement())
+  name_tm    String
+  name_ru    String
+  content_tm String
+  content_ru String
+  type       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ConstantPrices {
+  id        Int               @id @default(autoincrement())
+  title     String
+  value     Float             @default(0)
+  type      ConstantPriceType @default(NONE)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model PageViews {
+  id        Int      @id @default(autoincrement())
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  userId    Int
+  pageType  PageType @default(OTHER)
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Events {
+  id         Int       @id @default(autoincrement())
+  user       Users     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  userId     Int
+  type       EventType @default(OTHER)
+  customType String?   @default("")
+  count      Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model LoginHistory {
+  id          Int          @id @default(autoincrement())
+  user        Users        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  userId      Int
+  type        LoginLogType @default(LOGIN)
+  device      Device       @default(WEB)
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model FCMToken {
+  id        Int      @id @default(autoincrement())
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  userId    Int
+  token     String   @unique
+  device    Device   @default(WEB)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CarView {
+  id        Int      @id @default(autoincrement())
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  userId    Int
+  car       Car      @relation(fields: [carId], references: [id], onUpdate: NoAction, onDelete: Cascade)
+  carId     Int
+  device    Device   @default(ANDROID)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+enum Device {
+  WEB
+  ANDROID
+  IOS
+  LINUX
+  WINDOWS
+  MAC
+}
+
+enum LoginLogType {
+  LOGIN
+  LOGOUT
+}
+
+enum EventType {
+  NOTIFICATION_CLICK
+  POPUP_CLICK
+  BANNER_CLICK
+  ADS_CLICK
+  BOOKING_CAR_WASH
+  BOOKING_CAR_SERVICE
+  SHARE_LOCATION
+  OTHER
+}
+
+enum PageType {
+  NOTIFICATION
+  HOME_PAGE
+  MAPS_PAGE
+  SERVICE_PAGE
+  SHOP_PAGE
+  CAR_WASH_PAGE
+  OTHER
+  AUCTION_PAGE
+  SPEEDOMETER_PAGE
+  CARS_PAGE
+  COSTS_PAGE
+}
+
+enum ConstantPriceType {
+  FUEL
+  BEYIK_YOL_SERVICE
+  BEYIK_YOL_WASH
+  BEYIK_YOL_SHOP
+  NONE
+}
+
+enum ConstantType {
+  ABOUT_US
+  PRIVACY_POLICY
+  TERMS_OF_USE
+  TERMS_OF_BOOKING
+  TERMS_OF_REGISTER
+}
+
+enum ObjectPermissions {
+  NONE
+  ALL
+  VIEWER
+  VIEW_USERS
+  VIEW_ORDERS
+  CREATE_ORDER
+  DELETE_ORDER
+  EDIT_ORDER
+  VIEW_ANALYTICS
+  VIEW_PRODUCTS
+  CREATE_PRODUCT
+  DELETE_PRODUCT
+  EDIT_PRODUCT
+}
+
+enum AdsStatus {
+  NONE
+  BANNER
+  HOME_LARGE
+  HOME_MINI
+  IN_LIST
+  IN_VIEW
+  POPUP
+}
+
+enum ItemStatus {
+  PENDING
+  ACTIVE
+  RUNNING
+  CANCELED
+  REJECTED
+  WARNING
+  ERRORED
+  PAUSED
+  HIDDEN
+}
+
+enum UserStatus {
+  USER
+  VIP
+  ADMIN
+  SUPERADMIN
+  SERVICE
+  CARWASH
+  SHOP
+}
+
+enum ObjectStatus {
+  PENDING
+  FREE
+  VIP
+  MASTER
+  GUEST
+  PAUSED
+  REMOVED
+  HIDDEN
+}
+
+enum ObjectType {
+  SERVICE
+  WASH
+  SHOP
+}
+
+enum ImageType {
+  NONE
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum Permissions {
+  NONE
+  VIEWER
+  EDITOR
+  OWNER
+}
