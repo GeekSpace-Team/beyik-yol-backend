@@ -1,11 +1,10 @@
 import { EvacuatorService } from './evacuator.service';
 import { CreateEvacuatorDto } from './dto/create-evacuator.dto';
-import { UpdateEvacuatorDto } from './dto/update-evacuator.dto';
 export declare class EvacuatorController {
     private readonly evacuatorService;
     constructor(evacuatorService: EvacuatorService);
-    create(createEvacuatorDto: CreateEvacuatorDto): string;
-    findAll(): string;
-    update(id: string, updateEvacuatorDto: UpdateEvacuatorDto): string;
-    remove(id: string): string;
+    create(createEvacuatorDto: CreateEvacuatorDto): import(".prisma/client").Prisma.Prisma__EvacuatorClient<import(".prisma/client").Evacuator, never>;
+    findAll(): import(".prisma/client").PrismaPromise<import(".prisma/client").Evacuator[]>;
+    update(id: string, updateEvacuatorDto: CreateEvacuatorDto): import(".prisma/client").Prisma.Prisma__EvacuatorClient<import(".prisma/client").Evacuator, never>;
+    remove(id: string): import(".prisma/client").Prisma.Prisma__EvacuatorClient<import(".prisma/client").Evacuator, never>;
 }

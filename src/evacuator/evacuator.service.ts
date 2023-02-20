@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEvacuatorDto } from './dto/create-evacuator.dto';
 import { UpdateEvacuatorDto } from './dto/update-evacuator.dto';
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class EvacuatorService {
+  constructor(private readonly prisma: PrismaService) {
+  }
   create(createEvacuatorDto: CreateEvacuatorDto) {
-    return 'This action adds a new evacuator';
+    return this.prisma.evacuator.create({
+      data: createEvacuatorDto
+    });
   }
 
   findAll() {
-    return `This action returns all evacuator`;
+    return this.prisma.evacuator.findMany({
+      orderBy: [
+        {
+          createdAt: 'desc'
+        }
+      ]
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} evacuator`;
-  }
 
-  update(id: number, updateEvacuatorDto: UpdateEvacuatorDto) {
-    return `This action updates a #${id} evacuator`;
+  update(id: number, updateEvacuatorDto: CreateEvacuatorDto) {
+    return this.prisma.evacuator.update({
+      where: {id: id},
+      data: updateEvacuatorDto
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} evacuator`;
+    return this.prisma.evacuator.delete({
+      where: {id: id}
+    });
   }
 }

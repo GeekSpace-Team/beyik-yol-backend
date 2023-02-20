@@ -21,6 +21,8 @@ import { CarImageModule } from './car-image/car-image.module';
 import { EvacuatorModule } from './evacuator/evacuator.module';
 import { RegionModule } from './region/region.module';
 import { SubRegionModule } from './sub-region/sub-region.module';
+import { AdsModule } from './ads/ads.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [PrismaModule, ArticlesModule, UsersModule, CarsModule, AuthModule, CarBrandModule, ServeStaticModule.forRoot({
@@ -29,7 +31,7 @@ import { SubRegionModule } from './sub-region/sub-region.module';
     useFactory: () => ({
       dest: './upload'
     })
-  }), CarModelModule, CarOptionModule, CarEngineModule, CarTransmitionModule, CarImageModule, EvacuatorModule, RegionModule, SubRegionModule],
+  }), CarModelModule, CarOptionModule, CarEngineModule, CarTransmitionModule, CarImageModule, EvacuatorModule, RegionModule, SubRegionModule, AdsModule, NotificationModule],
   controllers: [AppController],
   providers: [
     AppService,

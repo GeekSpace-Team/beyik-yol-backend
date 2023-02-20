@@ -16,7 +16,7 @@ exports.EvacuatorController = void 0;
 const common_1 = require("@nestjs/common");
 const evacuator_service_1 = require("./evacuator.service");
 const create_evacuator_dto_1 = require("./dto/create-evacuator.dto");
-const update_evacuator_dto_1 = require("./dto/update-evacuator.dto");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let EvacuatorController = class EvacuatorController {
     constructor(evacuatorService) {
         this.evacuatorService = evacuatorService;
@@ -35,28 +35,31 @@ let EvacuatorController = class EvacuatorController {
     }
 };
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('create-evacuator'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_evacuator_dto_1.CreateEvacuatorDto]),
     __metadata("design:returntype", void 0)
 ], EvacuatorController.prototype, "create", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('get-all-evacuators'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], EvacuatorController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Patch)(':id'),
+    (0, common_1.Patch)('update-evacuator/:id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_evacuator_dto_1.UpdateEvacuatorDto]),
+    __metadata("design:paramtypes", [String, create_evacuator_dto_1.CreateEvacuatorDto]),
     __metadata("design:returntype", void 0)
 ], EvacuatorController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
+    (0, common_1.Delete)('delete-evacuator/:id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
