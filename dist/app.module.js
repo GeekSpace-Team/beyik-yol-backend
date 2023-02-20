@@ -30,7 +30,6 @@ const evacuator_module_1 = require("./evacuator/evacuator.module");
 const region_module_1 = require("./region/region.module");
 const sub_region_module_1 = require("./sub-region/sub-region.module");
 const ads_module_1 = require("./ads/ads.module");
-const notification_module_1 = require("./notification/notification.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -41,7 +40,7 @@ AppModule = __decorate([
                 useFactory: () => ({
                     dest: './upload'
                 })
-            }), car_model_module_1.CarModelModule, car_option_module_1.CarOptionModule, car_engine_module_1.CarEngineModule, car_transmition_module_1.CarTransmitionModule, car_image_module_1.CarImageModule, evacuator_module_1.EvacuatorModule, region_module_1.RegionModule, sub_region_module_1.SubRegionModule, ads_module_1.AdsModule, notification_module_1.NotificationModule],
+            }), car_model_module_1.CarModelModule, car_option_module_1.CarOptionModule, car_engine_module_1.CarEngineModule, car_transmition_module_1.CarTransmitionModule, car_image_module_1.CarImageModule, evacuator_module_1.EvacuatorModule, region_module_1.RegionModule, sub_region_module_1.SubRegionModule, ads_module_1.AdsModule],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
