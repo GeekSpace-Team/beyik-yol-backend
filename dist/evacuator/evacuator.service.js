@@ -27,7 +27,10 @@ let EvacuatorService = class EvacuatorService {
                 {
                     createdAt: 'desc'
                 }
-            ]
+            ],
+            include: {
+                subRegion: true
+            }
         });
     }
     update(id, updateEvacuatorDto) {

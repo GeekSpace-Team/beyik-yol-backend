@@ -19,7 +19,10 @@ export class EvacuatorService {
         {
           createdAt: 'desc'
         }
-      ]
+      ],
+      include: {
+        subRegion: true
+      }
     });
   }
 
