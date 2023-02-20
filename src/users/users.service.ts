@@ -1,21 +1,61 @@
-import { PrismaService } from "./../prisma/prisma.service";
+import { Injectable } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private prisma: PrismaService) {
   }
 
-  findAll() {
-    return `This action returns all users`;
+  create(createUserDto: CreateUserDto) {
+    return "This action adds a new user";
+  }
+
+  async findAll(page: number, limit: number) {
+    let page_count = 0, res = [];
+    await this.prisma.users.findMany()
+      .then(result => {
+        page_count = result.length;
+      });
+    await this.prisma.users.findMany({
+      skip: limit * (page - 1),
+      take: limit,
+      include: {
+        cars: true,
+        Events: true,
+        LoginHistory: true,
+        FCMToken: true,
+        carShare: true
+      },
+      orderBy: [{
+        createdAt: 'desc'
+      }]
+    }).then(result=>{
+      res=result;
+    })
+    return {
+      page_count: page_count,
+      users: res
+    }
   }
 
   findOne(username: string) {
-    return this.prisma.users.findFirst({where: {username: username}});
+    return this.prisma.users.findFirst({ where: { username: username } });
+  }
+
+  findById(id: number) {
+    return this.prisma.users.findFirst({ where: { id: id } });
+  }
+
+  async toggleBlock(id: number) {
+    let oldData;
+    await this.prisma.users.findFirst({ where: { id: id } })
+      .then((user) => {
+        oldData = user;
+      });
+    oldData.blocked = !oldData.blocked;
+    return this.prisma.users.update({ where: { id: id}, data: oldData});
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -25,4 +65,6 @@ export class UsersService {
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+
+
 }

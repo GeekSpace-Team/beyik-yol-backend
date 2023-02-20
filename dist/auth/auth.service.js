@@ -43,6 +43,9 @@ let AuthService = class AuthService {
             access_token: this.jwtService.sign(payload),
         };
     }
+    async getProfile(id) {
+        return this.usersService.findById(id);
+    }
 };
 AuthService = __decorate([
     (0, common_1.Injectable)(),

@@ -27,9 +27,6 @@ let EvacuatorController = class EvacuatorController {
     findAll() {
         return this.evacuatorService.findAll();
     }
-    findOne(id) {
-        return this.evacuatorService.findOne(+id);
-    }
     update(id, updateEvacuatorDto) {
         return this.evacuatorService.update(+id, updateEvacuatorDto);
     }
@@ -50,13 +47,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], EvacuatorController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], EvacuatorController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),

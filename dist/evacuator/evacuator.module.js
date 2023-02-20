@@ -10,10 +10,12 @@ exports.EvacuatorModule = void 0;
 const common_1 = require("@nestjs/common");
 const evacuator_service_1 = require("./evacuator.service");
 const evacuator_controller_1 = require("./evacuator.controller");
+const prisma_module_1 = require("../prisma/prisma.module");
 let EvacuatorModule = class EvacuatorModule {
 };
 EvacuatorModule = __decorate([
     (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
         controllers: [evacuator_controller_1.EvacuatorController],
         providers: [evacuator_service_1.EvacuatorService]
     })

@@ -5,6 +5,7 @@ export declare class CarsService {
     constructor(prisma: PrismaService);
     create(createCarDto: CreateCarDto): import(".prisma/client").Prisma.Prisma__CarClient<import(".prisma/client").Car, never>;
     findAll(): import(".prisma/client").PrismaPromise<(import(".prisma/client").Car & {
+        carShare: import(".prisma/client").CarShare[];
         users: import(".prisma/client").Users;
         carModel: import(".prisma/client").CarModel;
         carOption: import(".prisma/client").CarOption;
@@ -12,12 +13,12 @@ export declare class CarsService {
         carTransmition: import(".prisma/client").CarTransmition;
         images: import(".prisma/client").CarImage[];
         costFuel: import(".prisma/client").CostFuel[];
-        carShare: import(".prisma/client").CarShare[];
         costRepair: import(".prisma/client").CostRepair[];
         costChange: import(".prisma/client").CostChange[];
         CarView: import(".prisma/client").CarView[];
     })[]>;
     findOne(id: number): import(".prisma/client").Prisma.Prisma__CarClient<import(".prisma/client").Car & {
+        carShare: import(".prisma/client").CarShare[];
         users: import(".prisma/client").Users;
         carModel: import(".prisma/client").CarModel;
         carOption: import(".prisma/client").CarOption;
@@ -25,7 +26,6 @@ export declare class CarsService {
         carTransmition: import(".prisma/client").CarTransmition;
         images: import(".prisma/client").CarImage[];
         costFuel: import(".prisma/client").CostFuel[];
-        carShare: import(".prisma/client").CarShare[];
         costRepair: import(".prisma/client").CostRepair[];
         costChange: import(".prisma/client").CostChange[];
         CarView: import(".prisma/client").CarView[];

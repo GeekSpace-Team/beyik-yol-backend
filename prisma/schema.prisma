@@ -32,6 +32,7 @@ model Users {
   status       UserStatus     @default(USER)
   image        String?
   cars         Car[]
+  blocked      Boolean        @default(false)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   carShare     CarShare[]

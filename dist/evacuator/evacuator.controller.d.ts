@@ -6,7 +6,6 @@ export declare class EvacuatorController {
     constructor(evacuatorService: EvacuatorService);
     create(createEvacuatorDto: CreateEvacuatorDto): string;
     findAll(): string;
-    findOne(id: string): string;
     update(id: string, updateEvacuatorDto: UpdateEvacuatorDto): string;
     remove(id: string): string;
 }

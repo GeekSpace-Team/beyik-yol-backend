@@ -17,11 +17,6 @@ export class EvacuatorController {
     return this.evacuatorService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.evacuatorService.findOne(+id);
-  }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateEvacuatorDto: UpdateEvacuatorDto) {
     return this.evacuatorService.update(+id, updateEvacuatorDto);

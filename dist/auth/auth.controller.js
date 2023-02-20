@@ -25,7 +25,7 @@ let AuthController = class AuthController {
         return this.authService.login(req.user);
     }
     getProfile(req) {
-        return req.user;
+        return this.authService.getProfile(+req.user['userId']);
     }
 };
 __decorate([
