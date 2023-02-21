@@ -15,7 +15,8 @@ let NotificationModule = class NotificationModule {
 NotificationModule = __decorate([
     (0, common_1.Module)({
         controllers: [notification_controller_1.NotificationController],
-        providers: [notification_service_1.NotificationsService]
+        providers: [notification_service_1.NotificationsService],
+        exports: [notification_service_1.NotificationsService]
     })
 ], NotificationModule);
 exports.NotificationModule = NotificationModule;

@@ -22,6 +22,12 @@ import { EvacuatorModule } from './evacuator/evacuator.module';
 import { RegionModule } from './region/region.module';
 import { SubRegionModule } from './sub-region/sub-region.module';
 import { AdsModule } from './ads/ads.module';
+import { InboxModule } from './inbox/inbox.module';
+import { ConfigModule } from "@nestjs/config";
+import { ConstantModule } from './constant/constant.module';
+import { PriceModule } from './price/price.module';
+import { OtherModule } from './other/other.module';
+import { MobileAuthModule } from './mobile-auth/mobile-auth.module';
 
 @Module({
   imports: [PrismaModule, ArticlesModule, UsersModule, CarsModule, AuthModule, CarBrandModule, ServeStaticModule.forRoot({
@@ -30,7 +36,7 @@ import { AdsModule } from './ads/ads.module';
     useFactory: () => ({
       dest: './upload'
     })
-  }), CarModelModule, CarOptionModule, CarEngineModule, CarTransmitionModule, CarImageModule, EvacuatorModule, RegionModule, SubRegionModule, AdsModule],
+  }), CarModelModule, CarOptionModule, CarEngineModule, CarTransmitionModule, CarImageModule, EvacuatorModule, RegionModule, SubRegionModule, AdsModule, InboxModule, ConfigModule.forRoot(), ConstantModule, PriceModule, OtherModule, MobileAuthModule],
   controllers: [AppController],
   providers: [
     AppService,

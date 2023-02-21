@@ -8,7 +8,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationsService = void 0;
 const common_1 = require("@nestjs/common");
+const admin = require("firebase-admin");
 let NotificationsService = class NotificationsService {
+    async sendToAll(notification, tokens) {
+        const testToken = tokens;
+        const payload = {
+            notification: {
+                title: `${notification.title_tm} / ${notification.title_ru}`,
+                body: `${notification.body_tm} / ${notification.body_ru}`
+            },
+            data: {
+                'url': notification.url
+            }
+        };
+        await admin.messaging().sendToDevice(tokens, payload)
+            .then((value) => {
+            console.log(value);
+        }, (reason) => {
+            console.log(reason);
+        })
+            .catch((reason) => {
+            console.log(reason);
+        });
+    }
 };
 NotificationsService = __decorate([
     (0, common_1.Injectable)()

@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "ConstantTypes" AS ENUM ('ABOUT_US', 'PRIVACY_POLICY', 'TERMS_OF_USE', 'TERMS_OF_BOOKING', 'TERMS_OF_REGISTER');
+
+-- DropEnum
+DROP TYPE "ConstantType";

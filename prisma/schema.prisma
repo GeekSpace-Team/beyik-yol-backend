@@ -261,9 +261,10 @@ model Inbox {
   titleRu   String
   messageTm String
   messageRu String
-  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  userId    Int
+  user      Users?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  userId    Int?
   isRead    Boolean  @default(false)
+  url       String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -346,14 +347,14 @@ model MasterStatus {
 }
 
 model Constants {
-  id         Int      @id @default(autoincrement())
+  id         Int           @id @default(autoincrement())
   name_tm    String
   name_ru    String
   content_tm String
   content_ru String
-  type       String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  type       ConstantTypes
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
 }
 
 model ConstantPrices {
@@ -415,7 +416,18 @@ model CarView {
   carId     Int
   device    Device   @default(ANDROID)
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CheckedNumber {
+  id        Int      @id @default(autoincrement())
+  phone     String
+  uuid      String
+  used      Boolean  @default(false)
+  accepted  Boolean  @default(false)
+  is_exists Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Device {
@@ -458,14 +470,16 @@ enum PageType {
 }
 
 enum ConstantPriceType {
-  FUEL
+  FUEL_95
+  FUEL_80
+  FUEL_92
   BEYIK_YOL_SERVICE
   BEYIK_YOL_WASH
   BEYIK_YOL_SHOP
   NONE
 }
 
-enum ConstantType {
+enum ConstantTypes {
   ABOUT_US
   PRIVACY_POLICY
   TERMS_OF_USE

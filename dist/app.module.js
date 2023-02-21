@@ -30,6 +30,12 @@ const evacuator_module_1 = require("./evacuator/evacuator.module");
 const region_module_1 = require("./region/region.module");
 const sub_region_module_1 = require("./sub-region/sub-region.module");
 const ads_module_1 = require("./ads/ads.module");
+const inbox_module_1 = require("./inbox/inbox.module");
+const config_1 = require("@nestjs/config");
+const constant_module_1 = require("./constant/constant.module");
+const price_module_1 = require("./price/price.module");
+const other_module_1 = require("./other/other.module");
+const mobile_auth_module_1 = require("./mobile-auth/mobile-auth.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -40,7 +46,7 @@ AppModule = __decorate([
                 useFactory: () => ({
                     dest: './upload'
                 })
-            }), car_model_module_1.CarModelModule, car_option_module_1.CarOptionModule, car_engine_module_1.CarEngineModule, car_transmition_module_1.CarTransmitionModule, car_image_module_1.CarImageModule, evacuator_module_1.EvacuatorModule, region_module_1.RegionModule, sub_region_module_1.SubRegionModule, ads_module_1.AdsModule],
+            }), car_model_module_1.CarModelModule, car_option_module_1.CarOptionModule, car_engine_module_1.CarEngineModule, car_transmition_module_1.CarTransmitionModule, car_image_module_1.CarImageModule, evacuator_module_1.EvacuatorModule, region_module_1.RegionModule, sub_region_module_1.SubRegionModule, ads_module_1.AdsModule, inbox_module_1.InboxModule, config_1.ConfigModule.forRoot(), constant_module_1.ConstantModule, price_module_1.PriceModule, other_module_1.OtherModule, mobile_auth_module_1.MobileAuthModule],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,
