@@ -28,6 +28,8 @@ import { ConstantModule } from './constant/constant.module';
 import { PriceModule } from './price/price.module';
 import { OtherModule } from './other/other.module';
 import { MobileAuthModule } from './mobile-auth/mobile-auth.module';
+import { CostsModule } from './costs/costs.module';
+import { ChangeTypeModule } from './change-type/change-type.module';
 
 @Module({
   imports: [PrismaModule, ArticlesModule, UsersModule, CarsModule, AuthModule, CarBrandModule, ServeStaticModule.forRoot({
@@ -36,7 +38,7 @@ import { MobileAuthModule } from './mobile-auth/mobile-auth.module';
     useFactory: () => ({
       dest: './upload'
     })
-  }), CarModelModule, CarOptionModule, CarEngineModule, CarTransmitionModule, CarImageModule, EvacuatorModule, RegionModule, SubRegionModule, AdsModule, InboxModule, ConfigModule.forRoot(), ConstantModule, PriceModule, OtherModule, MobileAuthModule],
+  }), CarModelModule, CarOptionModule, CarEngineModule, CarTransmitionModule, CarImageModule, EvacuatorModule, RegionModule, SubRegionModule, AdsModule, InboxModule, ConfigModule.forRoot(), ConstantModule, PriceModule, OtherModule, MobileAuthModule, CostsModule, ChangeTypeModule],
   controllers: [AppController],
   providers: [
     AppService,

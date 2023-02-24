@@ -28,11 +28,17 @@ let CarsController = class CarsController {
     findAll() {
         return this.carsService.findAll();
     }
+    getUserCars(req) {
+        return this.carsService.getUserCars(+req.user['userId']);
+    }
     findOne(id) {
         return this.carsService.findOne(+id);
     }
     update(id, updateCarDto) {
         return this.carsService.update(+id, updateCarDto);
+    }
+    updateUserCars(req, updateCarDto) {
+        return this.carsService.updateUserCars(+req.user['userId'], updateCarDto);
     }
     remove(id) {
         return this.carsService.remove(+id);
@@ -54,6 +60,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CarsController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.Get)('get-user-cars'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CarsController.prototype, "getUserCars", null);
+__decorate([
     (0, common_1.Get)('get-car-by-id/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
@@ -70,6 +84,15 @@ __decorate([
     __metadata("design:paramtypes", [String, create_car_dto_1.CreateCarDto]),
     __metadata("design:returntype", void 0)
 ], CarsController.prototype, "update", null);
+__decorate([
+    (0, common_1.Patch)('update-user-cars'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Array]),
+    __metadata("design:returntype", void 0)
+], CarsController.prototype, "updateUserCars", null);
 __decorate([
     (0, common_1.Delete)('delete-car/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

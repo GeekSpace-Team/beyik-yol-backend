@@ -2,10 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.calcDate = exports.isNullValue = void 0;
 const isNullValue = (value) => {
-    if (typeof value === 'undefined' || value === null || value === '')
-        return true;
-    else
-        return false;
+    return typeof value === 'undefined' || value === null || value === '';
 };
 exports.isNullValue = isNullValue;
 function calcDate(date1, date2) {

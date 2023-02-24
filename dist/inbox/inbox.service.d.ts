@@ -9,4 +9,5 @@ export declare class InboxService {
     sendToUser(createInboxDto: CreateInboxDto): Promise<import(".prisma/client").Inbox>;
     findAll(): import(".prisma/client").PrismaPromise<import(".prisma/client").Inbox[]>;
     remove(id: number): import(".prisma/client").Prisma.Prisma__InboxClient<import(".prisma/client").Inbox, never>;
+    getUserInbox(id: number): Promise<any>;
 }

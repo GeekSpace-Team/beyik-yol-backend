@@ -24,6 +24,7 @@ exports.AuthService = void 0;
 const users_service_1 = require("./../users/users.service");
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
+const constants_1 = require("./constants");
 let AuthService = class AuthService {
     constructor(usersService, jwtService) {
         this.usersService = usersService;
@@ -45,6 +46,9 @@ let AuthService = class AuthService {
     }
     async getProfile(id) {
         return this.usersService.findById(id);
+    }
+    async getUser(token) {
+        return this.jwtService.verify(token, constants_1.jwtConstants);
     }
 };
 AuthService = __decorate([

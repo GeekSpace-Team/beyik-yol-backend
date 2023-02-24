@@ -12,4 +12,5 @@ export declare class CreateCarDto {
     vinCode: string;
     phoneNumber: string;
     usersId: number;
+    uuid: string;
 }

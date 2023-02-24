@@ -1,8 +1,5 @@
 export const isNullValue=(value: any) => {
-  if(typeof value === 'undefined' || value === null || value === '')
-    return true;
-  else
-    return false;
+  return typeof value === 'undefined' || value === null || value === '';
 }
 
 export function calcDate(date1, date2) {

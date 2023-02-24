@@ -49,5 +49,7 @@ export class CreateCarDto {
   @IsNotEmpty()
   usersId: number;
 
+  uuid: string="";
+
 
 }

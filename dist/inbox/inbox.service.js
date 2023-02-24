@@ -78,6 +78,37 @@ let InboxService = class InboxService {
             where: { id: id }
         });
     }
+    async getUserInbox(id) {
+        let res;
+        await this.prisma.inbox.findMany({
+            where: {
+                OR: [
+                    {
+                        userId: id
+                    },
+                    {
+                        userId: null
+                    }
+                ]
+            },
+            orderBy: [
+                {
+                    createdAt: 'desc'
+                }
+            ]
+        }).then(result => {
+            res = result;
+        });
+        await this.prisma.inbox.updateMany({
+            where: {
+                userId: id
+            },
+            data: {
+                isRead: true
+            }
+        });
+        return res;
+    }
 };
 InboxService = __decorate([
     (0, common_1.Injectable)(),

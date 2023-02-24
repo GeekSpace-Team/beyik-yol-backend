@@ -17,7 +17,8 @@ CarsModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule],
         controllers: [cars_controller_1.CarsController],
-        providers: [cars_service_1.CarsService]
+        providers: [cars_service_1.CarsService],
+        exports: [cars_service_1.CarsService]
     })
 ], CarsModule);
 exports.CarsModule = CarsModule;

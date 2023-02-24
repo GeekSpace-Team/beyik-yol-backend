@@ -17,7 +17,9 @@ let UsersService = class UsersService {
         this.prisma = prisma;
     }
     create(createUserDto) {
-        return "This action adds a new user";
+        return this.prisma.users.create({
+            data: createUserDto
+        });
     }
     async findAll(page, limit) {
         let page_count = 0, res = [];
@@ -36,7 +38,7 @@ let UsersService = class UsersService {
                 carShare: true
             },
             orderBy: [{
-                    createdAt: 'desc'
+                    createdAt: "desc"
                 }]
         }).then(result => {
             res = result;
@@ -50,7 +52,14 @@ let UsersService = class UsersService {
         return this.prisma.users.findFirst({ where: { username: username } });
     }
     findById(id) {
-        return this.prisma.users.findFirst({ where: { id: id } });
+        return this.prisma.users.findFirst({
+            where: { id: id },
+            include: {
+                cars: true,
+                inbox: true,
+                FCMToken: true
+            }
+        });
     }
     async toggleBlock(id) {
         let oldData;

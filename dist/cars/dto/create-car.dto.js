@@ -14,6 +14,9 @@ const class_validator_1 = require("class-validator");
 const item_status_model_1 = require("../../model/item-status.model");
 const client_1 = require("@prisma/client");
 class CreateCarDto {
+    constructor() {
+        this.uuid = "";
+    }
 }
 __decorate([
     (0, class_validator_1.IsString)(),

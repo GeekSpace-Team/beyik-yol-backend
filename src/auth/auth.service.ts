@@ -3,6 +3,7 @@ import { UsersService } from "./../users/users.service";
 import { SignInDto } from "./dto/sign-in.dto";
 import { Injectable, NotAcceptableException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { jwtConstants } from "./constants";
 
 @Injectable()
 export class AuthService {
@@ -29,5 +30,9 @@ export class AuthService {
 
   async getProfile(id: number){
     return this.usersService.findById(id);
+  }
+
+  async getUser(token: string) {
+    return this.jwtService.verify(token, jwtConstants);
   }
 }

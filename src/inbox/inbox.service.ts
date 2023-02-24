@@ -74,4 +74,36 @@ export class InboxService {
       where: {id: id}
     });
   }
+
+  async getUserInbox(id: number) {
+    let res;
+    await this.prisma.inbox.findMany({
+      where: {
+        OR: [
+          {
+            userId: id
+          },
+          {
+            userId: null
+          }
+        ]
+      },
+      orderBy: [
+        {
+          createdAt: 'desc'
+        }
+      ]
+    }).then(result=>{
+      res = result;
+    })
+    await this.prisma.inbox.updateMany({
+      where: {
+        userId: id
+      },
+      data: {
+        isRead: true
+      }
+    })
+    return res;
+  }
 }

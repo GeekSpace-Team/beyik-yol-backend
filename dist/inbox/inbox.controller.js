@@ -30,6 +30,9 @@ let InboxController = class InboxController {
     findAll() {
         return this.inboxService.findAll();
     }
+    getUserInbox(req) {
+        return this.inboxService.getUserInbox(+req.user['userId']);
+    }
     remove(id) {
         return this.inboxService.remove(+id);
     }
@@ -57,6 +60,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], InboxController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('get-user-inbox'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], InboxController.prototype, "getUserInbox", null);
 __decorate([
     (0, common_1.Delete)('delete-inbox/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

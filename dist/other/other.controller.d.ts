@@ -17,5 +17,7 @@ export declare class OtherController {
         imageType: string[];
         permissions: string[];
         constantType: string[];
+        costType: string[];
     };
+    getHome(req: any): Promise<{}>;
 }

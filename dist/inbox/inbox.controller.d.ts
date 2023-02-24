@@ -6,5 +6,6 @@ export declare class InboxController {
     create(createInboxDto: CreateInboxDto): Promise<import(".prisma/client").Inbox>;
     sendToUser(createInboxDto: CreateInboxDto): Promise<import(".prisma/client").Inbox>;
     findAll(): import(".prisma/client").PrismaPromise<import(".prisma/client").Inbox[]>;
+    getUserInbox(req: any): Promise<any>;
     remove(id: string): import(".prisma/client").Prisma.Prisma__InboxClient<import(".prisma/client").Inbox, never>;
 }

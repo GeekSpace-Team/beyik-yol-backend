@@ -10,10 +10,14 @@ exports.OtherModule = void 0;
 const common_1 = require("@nestjs/common");
 const other_service_1 = require("./other.service");
 const other_controller_1 = require("./other.controller");
+const prisma_module_1 = require("../prisma/prisma.module");
+const auth_module_1 = require("../auth/auth.module");
+const cars_module_1 = require("../cars/cars.module");
 let OtherModule = class OtherModule {
 };
 OtherModule = __decorate([
     (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule, auth_module_1.AuthModule, cars_module_1.CarsModule],
         controllers: [other_controller_1.OtherController],
         providers: [other_service_1.OtherService]
     })

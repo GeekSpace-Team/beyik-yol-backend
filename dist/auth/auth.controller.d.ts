@@ -5,5 +5,9 @@ export declare class AuthController {
     login(req: any): Promise<{
         access_token: string;
     }>;
-    getProfile(req: any): Promise<import(".prisma/client").Users>;
+    getProfile(req: any): Promise<import(".prisma/client").Users & {
+        cars: import(".prisma/client").Car[];
+        inbox: import(".prisma/client").Inbox[];
+        FCMToken: import(".prisma/client").FCMToken[];
+    }>;
 }

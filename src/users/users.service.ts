@@ -9,7 +9,9 @@ export class UsersService {
   }
 
   create(createUserDto: CreateUserDto) {
-    return "This action adds a new user";
+    return this.prisma.users.create({
+      data: createUserDto
+    });
   }
 
   async findAll(page: number, limit: number) {
@@ -29,15 +31,15 @@ export class UsersService {
         carShare: true
       },
       orderBy: [{
-        createdAt: 'desc'
+        createdAt: "desc"
       }]
-    }).then(result=>{
-      res=result;
-    })
+    }).then(result => {
+      res = result;
+    });
     return {
       page_count: page_count,
       users: res
-    }
+    };
   }
 
   findOne(username: string) {
@@ -45,7 +47,14 @@ export class UsersService {
   }
 
   findById(id: number) {
-    return this.prisma.users.findFirst({ where: { id: id } });
+    return this.prisma.users.findFirst({
+      where: { id: id },
+      include: {
+        cars: true,
+        inbox: true,
+        FCMToken: true
+      }
+    });
   }
 
   async toggleBlock(id: number) {
@@ -55,7 +64,7 @@ export class UsersService {
         oldData = user;
       });
     oldData.blocked = !oldData.blocked;
-    return this.prisma.users.update({ where: { id: id}, data: oldData});
+    return this.prisma.users.update({ where: { id: id }, data: oldData });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

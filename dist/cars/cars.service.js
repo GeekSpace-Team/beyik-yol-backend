@@ -71,10 +71,46 @@ let CarsService = class CarsService {
             }
         });
     }
+    async updateUserCars(id, updateCarDto) {
+        let result = [];
+        for (const car of updateCarDto) {
+            const i = updateCarDto.indexOf(car);
+            await this.prisma.car.upsert({
+                where: {
+                    uuid: car.uuid,
+                },
+                update: car,
+                create: car
+            }).then(res => {
+                result.push(res);
+            });
+        }
+        return result;
+    }
     remove(id) {
         return this.prisma.car.delete({
             where: {
                 id: id
+            }
+        });
+    }
+    async getUserCars(id) {
+        return this.prisma.car.findMany({
+            where: {
+                usersId: id
+            },
+            include: {
+                images: true,
+                carModel: true,
+                carTransmition: true,
+                carOption: true,
+                carEngineType: true,
+                carShare: true,
+                users: true,
+                costFuel: true,
+                costChange: true,
+                costRepair: true,
+                CarView: true
             }
         });
     }

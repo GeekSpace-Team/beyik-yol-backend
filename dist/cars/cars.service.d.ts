@@ -1,4 +1,4 @@
-import { CreateCarDto } from './dto/create-car.dto';
+import { CreateCarDto } from "./dto/create-car.dto";
 import { PrismaService } from "../prisma/prisma.service";
 export declare class CarsService {
     private readonly prisma;
@@ -31,5 +31,19 @@ export declare class CarsService {
         costChange: import(".prisma/client").CostChange[];
     }, never>;
     update(id: number, updateCarDto: CreateCarDto): import(".prisma/client").Prisma.Prisma__CarClient<import(".prisma/client").Car, never>;
+    updateUserCars(id: number, updateCarDto: CreateCarDto[]): Promise<any[]>;
     remove(id: number): import(".prisma/client").Prisma.Prisma__CarClient<import(".prisma/client").Car, never>;
+    getUserCars(id: number): Promise<(import(".prisma/client").Car & {
+        carShare: import(".prisma/client").CarShare[];
+        CarView: import(".prisma/client").CarView[];
+        users: import(".prisma/client").Users;
+        carModel: import(".prisma/client").CarModel;
+        carOption: import(".prisma/client").CarOption;
+        carEngineType: import(".prisma/client").CarEngine;
+        carTransmition: import(".prisma/client").CarTransmition;
+        images: import(".prisma/client").CarImage[];
+        costFuel: import(".prisma/client").CostFuel[];
+        costRepair: import(".prisma/client").CostRepair[];
+        costChange: import(".prisma/client").CostChange[];
+    })[]>;
 }

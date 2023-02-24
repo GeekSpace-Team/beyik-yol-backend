@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from "@nestjs/common";
 import { InboxService } from './inbox.service';
 import { CreateInboxDto } from './dto/create-inbox.dto';
 import { UpdateInboxDto } from './dto/update-inbox.dto';
@@ -27,6 +27,12 @@ export class InboxController {
   @UseGuards(JwtAuthGuard)
   findAll() {
     return this.inboxService.findAll();
+  }
+
+  @Get('get-user-inbox')
+  @UseGuards(JwtAuthGuard)
+  getUserInbox(@Request() req) {
+    return this.inboxService.getUserInbox(+req.user['userId']);
   }
 
   @Delete('delete-inbox/:id')

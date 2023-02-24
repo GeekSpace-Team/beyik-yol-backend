@@ -1,7 +1,7 @@
 import { CarsService } from "./cars.service";
 import { CreateCarDto } from "./dto/create-car.dto";
 import { UpdateCarDto } from "./dto/update-car.dto";
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -23,6 +23,12 @@ export class CarsController {
     return this.carsService.findAll();
   }
 
+  @Get('get-user-cars')
+  @UseGuards(JwtAuthGuard)
+  getUserCars(@Request() req) {
+    return this.carsService.getUserCars(+req.user['userId']);
+  }
+
   @Get('get-car-by-id/:id')
   @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
@@ -33,6 +39,12 @@ export class CarsController {
   @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateCarDto: CreateCarDto) {
     return this.carsService.update(+id, updateCarDto);
+  }
+
+  @Patch('update-user-cars')
+  @UseGuards(JwtAuthGuard)
+  updateUserCars(@Request() req, @Body() updateCarDto: CreateCarDto[]) {
+    return this.carsService.updateUserCars(+req.user['userId'], updateCarDto);
   }
 
   @Delete('delete-car/:id')
