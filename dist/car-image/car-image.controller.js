@@ -42,6 +42,7 @@ let CarImageController = class CarImageController {
         return this.carImageService.update(+id, updateCarImageDto);
     }
     remove(id) {
+        console.log(id);
         return this.carImageService.remove(+id);
     }
 };

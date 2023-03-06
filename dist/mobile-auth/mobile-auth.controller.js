@@ -22,6 +22,7 @@ const create_user_dto_1 = require("../users/dto/create-user.dto");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const file_helper_1 = require("../helper/file.helper");
+const save_fcm_token_dto_1 = require("./dto/save-fcm-token.dto");
 let MobileAuthController = class MobileAuthController {
     constructor(mobileAuthService) {
         this.mobileAuthService = mobileAuthService;
@@ -51,6 +52,9 @@ let MobileAuthController = class MobileAuthController {
         catch (err) {
             throw new common_1.BadRequestException();
         }
+    }
+    saveFcmToken(req, body) {
+        return this.mobileAuthService.saveFcmToken(+req.user['userId'], body);
     }
 };
 __decorate([
@@ -113,6 +117,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], MobileAuthController.prototype, "changeImage", null);
+__decorate([
+    (0, common_1.Post)("save-fcm-token"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, save_fcm_token_dto_1.SaveFcmTokenDto]),
+    __metadata("design:returntype", void 0)
+], MobileAuthController.prototype, "saveFcmToken", null);
 MobileAuthController = __decorate([
     (0, common_1.Controller)('mobile-auth'),
     __metadata("design:paramtypes", [mobile_auth_service_1.MobileAuthService])

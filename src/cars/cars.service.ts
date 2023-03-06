@@ -41,7 +41,15 @@ export class CarsService {
       },
       include: {
         images: true,
-        carModel: true,
+        carModel: {
+          include: {
+            brand: {
+              include: {
+                models: true
+              }
+            }
+          }
+        },
         carTransmition: true,
         carOption: true,
         carEngineType: true,
@@ -107,5 +115,39 @@ export class CarsService {
         CarView: true
       }
     });
+  }
+
+  async getAddCarDetails() {
+    let res={};
+     await this.prisma.carBrand.findMany({include: {models:true}})
+       .then(result=>{
+         res = {
+           ...res,
+           brand: result
+         }
+       })
+    await this.prisma.carOption.findMany()
+      .then(result=>{
+        res = {
+          ...res,
+          option: result
+        }
+      })
+    await this.prisma.carTransmition.findMany()
+      .then(result=>{
+        res = {
+          ...res,
+          transmition: result
+        }
+      })
+    await this.prisma.carEngine.findMany()
+      .then(result=>{
+        res = {
+          ...res,
+          engine: result
+        }
+      })
+
+    return res;
   }
 }

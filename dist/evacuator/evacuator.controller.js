@@ -33,6 +33,9 @@ let EvacuatorController = class EvacuatorController {
     remove(id) {
         return this.evacuatorService.remove(+id);
     }
+    findAllMobile(region) {
+        return this.evacuatorService.findAllMobile(+region);
+    }
 };
 __decorate([
     (0, common_1.Post)('create-evacuator'),
@@ -65,6 +68,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], EvacuatorController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Get)('get-all-evacuators-mobile?'),
+    __param(0, (0, common_1.Query)("region")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], EvacuatorController.prototype, "findAllMobile", null);
 EvacuatorController = __decorate([
     (0, common_1.Controller)('evacuator'),
     __metadata("design:paramtypes", [evacuator_service_1.EvacuatorService])

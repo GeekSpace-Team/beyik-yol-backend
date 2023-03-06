@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateConstantDto } from './dto/create-constant.dto';
 import { UpdateConstantDto } from './dto/update-constant.dto';
 import { PrismaService } from "../prisma/prisma.service";
+import { ConstantTypes } from "@prisma/client";
 
 @Injectable()
 export class ConstantService {
@@ -34,5 +35,13 @@ export class ConstantService {
     return this.prisma.constants.delete({
       where: {id: id}
     });
+  }
+
+  findByType(type: ConstantTypes) {
+    return this.prisma.constants.findFirst({
+      where: {
+        type: type
+      }
+    })
   }
 }

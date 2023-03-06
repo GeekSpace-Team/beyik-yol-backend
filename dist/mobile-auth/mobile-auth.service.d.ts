@@ -2,6 +2,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import { UsersService } from "../users/users.service";
 import { CreateUserDto } from "../users/dto/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
+import { SaveFcmTokenDto } from "./dto/save-fcm-token.dto";
 export declare class MobileAuthService {
     private readonly prisma;
     private readonly users;
@@ -21,11 +22,8 @@ export declare class MobileAuthService {
         access_token: string;
     };
     checkNumber(phone: string, uuid: string): Promise<any>;
-    getProfile(id: number): Promise<import(".prisma/client").Users & {
-        cars: import(".prisma/client").Car[];
-        inbox: import(".prisma/client").Inbox[];
-        FCMToken: import(".prisma/client").FCMToken[];
-    }>;
+    getProfile(id: number): Promise<{}>;
     editProfile(id: number, body: CreateUserDto): Promise<import(".prisma/client").Users>;
     changeImage(image: string, id: number): Promise<import(".prisma/client").Users>;
+    saveFcmToken(id: number, body: SaveFcmTokenDto): import(".prisma/client").Prisma.Prisma__FCMTokenClient<import(".prisma/client").FCMToken, never>;
 }

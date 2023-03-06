@@ -180,6 +180,13 @@ let MobileAuthService = class MobileAuthService {
             }
         });
     }
+    saveFcmToken(id, body) {
+        body.userId = id;
+        console.log(body.token);
+        return this.prisma.fCMToken.create({
+            data: body
+        });
+    }
 };
 MobileAuthService = __decorate([
     (0, common_1.Injectable)(),

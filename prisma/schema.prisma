@@ -411,7 +411,7 @@ model LoginHistory {
 model FCMToken {
   id        Int      @id @default(autoincrement())
   user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  userId    Int
+  userId    Int?
   token     String   @unique
   device    Device   @default(WEB)
   createdAt DateTime @default(now())

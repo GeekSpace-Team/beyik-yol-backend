@@ -7,26 +7,30 @@ export declare class CarsService {
     findAll(): import(".prisma/client").PrismaPromise<(import(".prisma/client").Car & {
         carShare: import(".prisma/client").CarShare[];
         CarView: import(".prisma/client").CarView[];
-        users: import(".prisma/client").Users;
         carModel: import(".prisma/client").CarModel;
         carOption: import(".prisma/client").CarOption;
         carEngineType: import(".prisma/client").CarEngine;
         carTransmition: import(".prisma/client").CarTransmition;
         images: import(".prisma/client").CarImage[];
         costFuel: import(".prisma/client").CostFuel[];
+        users: import(".prisma/client").Users;
         costRepair: import(".prisma/client").CostRepair[];
         costChange: import(".prisma/client").CostChange[];
     })[]>;
     findOne(id: number): import(".prisma/client").Prisma.Prisma__CarClient<import(".prisma/client").Car & {
         carShare: import(".prisma/client").CarShare[];
         CarView: import(".prisma/client").CarView[];
-        users: import(".prisma/client").Users;
-        carModel: import(".prisma/client").CarModel;
+        carModel: import(".prisma/client").CarModel & {
+            brand: import(".prisma/client").CarBrand & {
+                models: import(".prisma/client").CarModel[];
+            };
+        };
         carOption: import(".prisma/client").CarOption;
         carEngineType: import(".prisma/client").CarEngine;
         carTransmition: import(".prisma/client").CarTransmition;
         images: import(".prisma/client").CarImage[];
         costFuel: import(".prisma/client").CostFuel[];
+        users: import(".prisma/client").Users;
         costRepair: import(".prisma/client").CostRepair[];
         costChange: import(".prisma/client").CostChange[];
     }, never>;
@@ -36,14 +40,15 @@ export declare class CarsService {
     getUserCars(id: number): Promise<(import(".prisma/client").Car & {
         carShare: import(".prisma/client").CarShare[];
         CarView: import(".prisma/client").CarView[];
-        users: import(".prisma/client").Users;
         carModel: import(".prisma/client").CarModel;
         carOption: import(".prisma/client").CarOption;
         carEngineType: import(".prisma/client").CarEngine;
         carTransmition: import(".prisma/client").CarTransmition;
         images: import(".prisma/client").CarImage[];
         costFuel: import(".prisma/client").CostFuel[];
+        users: import(".prisma/client").Users;
         costRepair: import(".prisma/client").CostRepair[];
         costChange: import(".prisma/client").CostChange[];
     })[]>;
+    getAddCarDetails(): Promise<{}>;
 }

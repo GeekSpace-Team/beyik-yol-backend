@@ -33,6 +33,7 @@ export class CarImageService {
   }
 
   async remove(id: number) {
+    console.log(id);
     let oldData = await this.prisma.carImage.findUnique({
       where: {
         id: id

@@ -50,7 +50,15 @@ let CarsService = class CarsService {
             },
             include: {
                 images: true,
-                carModel: true,
+                carModel: {
+                    include: {
+                        brand: {
+                            include: {
+                                models: true
+                            }
+                        }
+                    }
+                },
                 carTransmition: true,
                 carOption: true,
                 carEngineType: true,
@@ -113,6 +121,26 @@ let CarsService = class CarsService {
                 CarView: true
             }
         });
+    }
+    async getAddCarDetails() {
+        let res = {};
+        await this.prisma.carBrand.findMany({ include: { models: true } })
+            .then(result => {
+            res = Object.assign(Object.assign({}, res), { brand: result });
+        });
+        await this.prisma.carOption.findMany()
+            .then(result => {
+            res = Object.assign(Object.assign({}, res), { option: result });
+        });
+        await this.prisma.carTransmition.findMany()
+            .then(result => {
+            res = Object.assign(Object.assign({}, res), { transmition: result });
+        });
+        await this.prisma.carEngine.findMany()
+            .then(result => {
+            res = Object.assign(Object.assign({}, res), { engine: result });
+        });
+        return res;
     }
 };
 CarsService = __decorate([

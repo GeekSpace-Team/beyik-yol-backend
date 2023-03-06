@@ -35,6 +35,11 @@ export class CarsController {
     return this.carsService.findOne(+id);
   }
 
+  @Get('get-add-car-details')
+  getAddCarDetails() {
+    return this.carsService.getAddCarDetails();
+  }
+
   @Patch('update-car/:id')
   @UseGuards(JwtAuthGuard)
   update(@Param('id') id: string, @Body() updateCarDto: CreateCarDto) {

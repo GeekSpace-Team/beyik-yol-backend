@@ -44,6 +44,50 @@ let EvacuatorService = class EvacuatorService {
             where: { id: id }
         });
     }
+    async findAllMobile(region) {
+        let subregions = [], regions = [{
+                id: 0,
+                name_tm: "Ählisi",
+                name_ru: "Все",
+                description: "Ählisi",
+                createdAt: new Date(),
+                updatedAt: new Date()
+            }];
+        let res = {};
+        await this.prisma.region.findMany().then(result => {
+            regions = [...regions, ...result];
+        });
+        await this.prisma.subRegion.findMany({
+            where: { regionId: region }
+        }).then(result => {
+            subregions = result.map(item => item.id);
+        });
+        let condition = {};
+        if (region != 0) {
+            condition = {
+                subRegionId: {
+                    in: subregions
+                }
+            };
+        }
+        await this.prisma.evacuator.findMany({
+            where: condition,
+            orderBy: [
+                {
+                    createdAt: 'desc'
+                }
+            ],
+            include: {
+                subRegion: true
+            }
+        }).then(result => {
+            res = {
+                regions: regions,
+                data: result
+            };
+        });
+        return res;
+    }
 };
 EvacuatorService = __decorate([
     (0, common_1.Injectable)(),

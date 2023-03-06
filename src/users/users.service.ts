@@ -46,15 +46,43 @@ export class UsersService {
     return this.prisma.users.findFirst({ where: { username: username } });
   }
 
-  findById(id: number) {
-    return this.prisma.users.findFirst({
+  async findById(id: number) {
+    let prices = [],res={};
+    await this.prisma.car.findMany({
+      where: {usersId: id},
+      select: {
+        id: true
+      }
+    }).then(async result => {
+      prices = await this.prisma.costChange.findMany({
+        where: {
+          carId: {
+            in: result.map(car=> car.id)
+          }
+        },
+        select: {
+          price: true
+        }
+      })
+    })
+    await this.prisma.users.findFirst({
       where: { id: id },
       include: {
         cars: true,
         inbox: true,
         FCMToken: true
       }
-    });
+    }).then(result => {
+      let costs=0;
+      try{
+        costs = prices.map(it=>it.price).reduce((a,b)=> a+b)
+      } catch (err){}
+      res = {
+        ...result,
+        costs: costs
+      }
+    })
+    return res;
   }
 
   async toggleBlock(id: number) {
@@ -76,4 +104,18 @@ export class UsersService {
   }
 
 
+  async findAllFull() {
+    return  this.prisma.users.findMany({
+      include: {
+        cars: true,
+        Events: true,
+        LoginHistory: true,
+        FCMToken: true,
+        carShare: true
+      },
+      orderBy: [{
+        createdAt: "desc"
+      }]
+    })
+  }
 }

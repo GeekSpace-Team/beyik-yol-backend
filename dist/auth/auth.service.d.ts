@@ -8,10 +8,6 @@ export declare class AuthService {
     login(user: any): Promise<{
         access_token: string;
     }>;
-    getProfile(id: number): Promise<import(".prisma/client").Users & {
-        cars: import(".prisma/client").Car[];
-        inbox: import(".prisma/client").Inbox[];
-        FCMToken: import(".prisma/client").FCMToken[];
-    }>;
+    getProfile(id: number): Promise<{}>;
     getUser(token: string): Promise<any>;
 }

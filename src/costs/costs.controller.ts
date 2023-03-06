@@ -24,6 +24,12 @@ export class CostsController {
     return this.costsService.getByCarId(+id, type);
   }
 
+  @Get('get-costs-by-id/:id')
+  @UseGuards(JwtAuthGuard)
+  getCostsById(@Param('id') id: string){
+    return this.costsService.getById(+id);
+  }
+
   @Patch('update-cost/:id')
   @UseGuards(JwtAuthGuard)
   updateCost(@Param("id") id: string,@Body() costChangeDto: CostChangeDto) {

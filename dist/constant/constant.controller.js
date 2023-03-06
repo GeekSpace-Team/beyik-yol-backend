@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const constant_service_1 = require("./constant.service");
 const create_constant_dto_1 = require("./dto/create-constant.dto");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const client_1 = require("@prisma/client");
 let ConstantController = class ConstantController {
     constructor(constantService) {
         this.constantService = constantService;
@@ -26,6 +27,9 @@ let ConstantController = class ConstantController {
     }
     findAll() {
         return this.constantService.findAll();
+    }
+    findByType(type) {
+        return this.constantService.findByType(type);
     }
     update(id, updateConstantDto) {
         return this.constantService.update(+id, updateConstantDto);
@@ -49,6 +53,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ConstantController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('get-constant-by-type?'),
+    __param(0, (0, common_1.Query)("type")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ConstantController.prototype, "findByType", null);
 __decorate([
     (0, common_1.Patch)('update-constant/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

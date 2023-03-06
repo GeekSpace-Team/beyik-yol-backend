@@ -60,6 +60,7 @@ export class CarImageController {
 
   @Delete('remove-car-image/:id')
   remove(@Param('id') id: string) {
+    console.log(id);
     return this.carImageService.remove(+id);
   }
 }

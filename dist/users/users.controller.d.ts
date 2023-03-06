@@ -7,6 +7,13 @@ export declare class UsersController {
         page_count: number;
         users: any[];
     }>;
+    findFull(): Promise<(import(".prisma/client").Users & {
+        cars: import(".prisma/client").Car[];
+        carShare: import(".prisma/client").CarShare[];
+        Events: import(".prisma/client").Events[];
+        LoginHistory: import(".prisma/client").LoginHistory[];
+        FCMToken: import(".prisma/client").FCMToken[];
+    })[]>;
     findOne(username: string): import(".prisma/client").Prisma.Prisma__UsersClient<import(".prisma/client").Users, never>;
     toggleUserBlock(id: string): Promise<import(".prisma/client").Users>;
     update(id: string, updateUserDto: UpdateUserDto): string;

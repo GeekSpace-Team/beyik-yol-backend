@@ -9,4 +9,5 @@ export declare class EvacuatorController {
     })[]>;
     update(id: string, updateEvacuatorDto: CreateEvacuatorDto): import(".prisma/client").Prisma.Prisma__EvacuatorClient<import(".prisma/client").Evacuator, never>;
     remove(id: string): import(".prisma/client").Prisma.Prisma__EvacuatorClient<import(".prisma/client").Evacuator, never>;
+    findAllMobile(region: string): Promise<{}>;
 }

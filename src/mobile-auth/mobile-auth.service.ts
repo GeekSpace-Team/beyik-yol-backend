@@ -10,6 +10,7 @@ import { UsersService } from "../users/users.service";
 import { CreateUserDto } from "../users/dto/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import * as fs from "fs";
+import { SaveFcmTokenDto } from "./dto/save-fcm-token.dto";
 
 @Injectable()
 export class MobileAuthService {
@@ -214,6 +215,14 @@ export class MobileAuthService {
       data: {
         image: image
       }
+    })
+  }
+
+  saveFcmToken(id: number, body: SaveFcmTokenDto) {
+    body.userId=id;
+    console.log(body.token)
+    return this.prisma.fCMToken.create({
+      data: body
     })
   }
 }

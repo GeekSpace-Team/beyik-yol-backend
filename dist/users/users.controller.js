@@ -24,6 +24,9 @@ let UsersController = class UsersController {
     findAll(page, limit) {
         return this.usersService.findAll(+page, +limit);
     }
+    findFull() {
+        return this.usersService.findAllFull();
+    }
     findOne(username) {
         return this.usersService.findOne(username);
     }
@@ -46,6 +49,13 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('get-all-users-full'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "findFull", null);
 __decorate([
     (0, common_1.Get)(':username'),
     __param(0, (0, common_1.Param)('username')),

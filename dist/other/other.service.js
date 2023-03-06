@@ -141,6 +141,23 @@ let OtherService = class OtherService {
                 res = Object.assign(Object.assign({}, res), { user: result });
             });
         }
+        await this.prisma.constantPrices.findMany({
+            where: {
+                OR: [
+                    {
+                        type: "FUEL_80"
+                    },
+                    {
+                        type: "FUEL_92"
+                    },
+                    {
+                        type: "FUEL_95"
+                    }
+                ]
+            }
+        }).then(result => {
+            res = Object.assign(Object.assign({}, res), { fuel_price: result });
+        });
         return res;
     }
 };

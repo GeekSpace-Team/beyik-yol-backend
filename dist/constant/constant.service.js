@@ -41,6 +41,13 @@ let ConstantService = class ConstantService {
             where: { id: id }
         });
     }
+    findByType(type) {
+        return this.prisma.constants.findFirst({
+            where: {
+                type: type
+            }
+        });
+    }
 };
 ConstantService = __decorate([
     (0, common_1.Injectable)(),

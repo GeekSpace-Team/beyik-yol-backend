@@ -23,6 +23,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { editFileName } from "../helper/file.helper";
 import { CreateAdDto } from "../ads/dto/create-ad.dto";
+import { SaveFcmTokenDto } from "./dto/save-fcm-token.dto";
 
 @Controller('mobile-auth')
 export class MobileAuthController {
@@ -74,5 +75,11 @@ export class MobileAuthController {
     } catch (err) {
       throw new BadRequestException();
     }
+  }
+
+  @Post("save-fcm-token")
+  @UseGuards(JwtAuthGuard)
+  saveFcmToken(@Request() req, @Body() body: SaveFcmTokenDto){
+    return this.mobileAuthService.saveFcmToken(+req.user['userId'], body)
   }
 }

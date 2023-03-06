@@ -10,12 +10,15 @@ export declare class UsersService {
         users: any[];
     }>;
     findOne(username: string): import(".prisma/client").Prisma.Prisma__UsersClient<import(".prisma/client").Users, never>;
-    findById(id: number): import(".prisma/client").Prisma.Prisma__UsersClient<import(".prisma/client").Users & {
-        cars: import(".prisma/client").Car[];
-        inbox: import(".prisma/client").Inbox[];
-        FCMToken: import(".prisma/client").FCMToken[];
-    }, never>;
+    findById(id: number): Promise<{}>;
     toggleBlock(id: number): Promise<import(".prisma/client").Users>;
     update(id: number, updateUserDto: UpdateUserDto): string;
     remove(id: number): string;
+    findAllFull(): Promise<(import(".prisma/client").Users & {
+        cars: import(".prisma/client").Car[];
+        carShare: import(".prisma/client").CarShare[];
+        Events: import(".prisma/client").Events[];
+        LoginHistory: import(".prisma/client").LoginHistory[];
+        FCMToken: import(".prisma/client").FCMToken[];
+    })[]>;
 }

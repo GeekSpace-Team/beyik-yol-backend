@@ -18,4 +18,10 @@ export declare class CostsService {
         CostToType: import(".prisma/client").CostToType[];
     }>;
     deleteCost(id: number): import(".prisma/client").Prisma.Prisma__CostChangeClient<import(".prisma/client").CostChange, never>;
+    getById(id: number): import(".prisma/client").Prisma.Prisma__CostChangeClient<import(".prisma/client").CostChange & {
+        car: import(".prisma/client").Car;
+        CostToType: (import(".prisma/client").CostToType & {
+            changeType: import(".prisma/client").ChangeType;
+        })[];
+    }, never>;
 }

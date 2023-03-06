@@ -13,6 +13,12 @@ export declare class CostsController {
             changeType: import(".prisma/client").ChangeType;
         })[];
     })[]>;
+    getCostsById(id: string): import(".prisma/client").Prisma.Prisma__CostChangeClient<import(".prisma/client").CostChange & {
+        car: import(".prisma/client").Car;
+        CostToType: (import(".prisma/client").CostToType & {
+            changeType: import(".prisma/client").ChangeType;
+        })[];
+    }, never>;
     updateCost(id: string, costChangeDto: CostChangeDto): Promise<import(".prisma/client").CostChange & {
         car: import(".prisma/client").Car;
         CostToType: import(".prisma/client").CostToType[];

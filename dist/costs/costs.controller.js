@@ -27,6 +27,9 @@ let CostsController = class CostsController {
     getCostsByCarId(id, type) {
         return this.costsService.getByCarId(+id, type);
     }
+    getCostsById(id) {
+        return this.costsService.getById(+id);
+    }
     updateCost(id, costChangeDto) {
         return this.costsService.updateCost(+id, costChangeDto);
     }
@@ -51,6 +54,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], CostsController.prototype, "getCostsByCarId", null);
+__decorate([
+    (0, common_1.Get)('get-costs-by-id/:id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], CostsController.prototype, "getCostsById", null);
 __decorate([
     (0, common_1.Patch)('update-cost/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

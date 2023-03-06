@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from "@nestjs/common";
 import { ConstantService } from './constant.service';
 import { CreateConstantDto } from './dto/create-constant.dto';
 import { UpdateConstantDto } from './dto/update-constant.dto';
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { ConstantTypes } from "@prisma/client";
 
 @Controller('constant')
 export class ConstantController {
@@ -18,6 +19,11 @@ export class ConstantController {
   @UseGuards(JwtAuthGuard)
   findAll() {
     return this.constantService.findAll();
+  }
+
+  @Get('get-constant-by-type?')
+  findByType(@Query("type") type: ConstantTypes) {
+    return this.constantService.findByType(type);
   }
 
 

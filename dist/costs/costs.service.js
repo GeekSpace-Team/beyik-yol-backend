@@ -22,6 +22,14 @@ let CostsService = class CostsService {
         let ids = createCostDto.typeIds;
         delete createCostDto.typeIds;
         let res;
+        await this.prisma.car.update({
+            data: {
+                lastMile: createCostDto.mile
+            },
+            where: {
+                id: createCostDto.carId
+            }
+        });
         await this.prisma.costChange.create({
             data: createCostDto
         }).then(result => {
@@ -75,6 +83,22 @@ let CostsService = class CostsService {
         let ids = createCostDto.typeIds;
         delete createCostDto.typeIds;
         let res;
+        await this.prisma.car.findUnique({
+            where: {
+                id: createCostDto.carId
+            }
+        }).then(async (result) => {
+            if (result.lastMile < createCostDto.mile) {
+                await this.prisma.car.update({
+                    data: {
+                        lastMile: createCostDto.mile
+                    },
+                    where: {
+                        id: createCostDto.carId
+                    }
+                });
+            }
+        });
         await this.prisma.costChange.update({
             where: { id: id },
             data: createCostDto
@@ -108,6 +132,21 @@ let CostsService = class CostsService {
     deleteCost(id) {
         return this.prisma.costChange.delete({
             where: { id: id }
+        });
+    }
+    getById(id) {
+        return this.prisma.costChange.findUnique({
+            where: {
+                id: id
+            },
+            include: {
+                car: true,
+                CostToType: {
+                    include: {
+                        changeType: true
+                    }
+                }
+            }
         });
     }
 };

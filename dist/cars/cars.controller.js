@@ -34,6 +34,9 @@ let CarsController = class CarsController {
     findOne(id) {
         return this.carsService.findOne(+id);
     }
+    getAddCarDetails() {
+        return this.carsService.getAddCarDetails();
+    }
     update(id, updateCarDto) {
         return this.carsService.update(+id, updateCarDto);
     }
@@ -75,6 +78,12 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], CarsController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)('get-add-car-details'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], CarsController.prototype, "getAddCarDetails", null);
 __decorate([
     (0, common_1.Patch)('update-car/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

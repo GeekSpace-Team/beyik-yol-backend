@@ -164,6 +164,27 @@ export class OtherService {
       })
     }
 
+    await this.prisma.constantPrices.findMany({
+      where: {
+        OR: [
+          {
+            type: "FUEL_80"
+          },
+          {
+            type: "FUEL_92"
+          },
+          {
+            type: "FUEL_95"
+          }
+        ]
+      }
+    }).then(result =>{
+      res = {
+        ...res,
+        fuel_price: result
+      }
+    })
+
     return res;
   }
 }

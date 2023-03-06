@@ -14,6 +14,13 @@ export class UsersController {
     return this.usersService.findAll(+page,+limit);
   }
 
+
+  @Get('get-all-users-full')
+  @UseGuards(JwtAuthGuard)
+  findFull() {
+    return this.usersService.findAllFull();
+  }
+
   @Get(':username')
   findOne(@Param('username') username: string) {
     return this.usersService.findOne(username);

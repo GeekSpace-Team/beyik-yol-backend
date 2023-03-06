@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from "@nestjs/common";
 import { EvacuatorService } from './evacuator.service';
 import { CreateEvacuatorDto } from './dto/create-evacuator.dto';
 import { UpdateEvacuatorDto } from './dto/update-evacuator.dto';
@@ -29,6 +29,11 @@ export class EvacuatorController {
   @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.evacuatorService.remove(+id);
+  }
+
+  @Get('get-all-evacuators-mobile?')
+  findAllMobile(@Query("region") region: string) {
+    return this.evacuatorService.findAllMobile(+region);
   }
 
 }
