@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Request } from "@nestjs/common";
 import { CostsService } from './costs.service';
 import { CreateCostDto } from './dto/create-cost.dto';
 import { UpdateCostDto } from './dto/update-cost.dto';
@@ -14,8 +14,8 @@ export class CostsController {
 
   @Post('create-cost')
   @UseGuards(JwtAuthGuard)
-  createChangeCost(@Body() costChangeDto: CostChangeDto) {
-    return this.costsService.createChange(costChangeDto);
+  createChangeCost(@Body() costChangeDto: CostChangeDto,@Request() req) {
+    return this.costsService.createChange(costChangeDto,+req.user['userId']);
   }
 
   @Get('get-costs-by-car-id/:id')

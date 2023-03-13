@@ -8,12 +8,15 @@ import { CostRepairDto } from "./dto/cost-repair.dto";
 import { IsNotEmpty } from "class-validator";
 import { isNullValue } from "../helper/utils";
 import { CostToTypeDto } from "./dto/cost-to-type.dto";
+import { NotificationsService } from "../notification/notification.service";
+import { NotificationDto } from "../notification/dto/notification.dto";
+import { CostType } from "@prisma/client";
 
 @Injectable()
 export class CostsService {
-  constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService,private readonly notification: NotificationsService){}
 
-  async createChange(createCostDto: CostChangeDto) {
+  async createChange(createCostDto: CostChangeDto,userId: number) {
     let ids = createCostDto.typeIds;
     delete createCostDto.typeIds;
     let res;
@@ -41,6 +44,51 @@ export class CostsService {
     await this.prisma.costToType.createMany({
       data: costToType
     });
+    await this.prisma.costChange.findFirst({
+      where: {
+        reminder: true,
+        costType: CostType.CHANGE,
+        carId: createCostDto.carId
+      },
+      orderBy: [
+        {
+          createdAt: 'desc'
+        }
+      ]
+    }).then(async result =>{
+      if(result!=null){
+        if(typeof result.id !=='undefined' && result.id!=null){
+          let payload = new NotificationDto();
+          payload.url = "";
+          payload.body_tm = `Çalyşma wagty boldy!`;
+          payload.body_ru = `Пришло время перемен!`;
+          payload.title_ru = `Пришло время перемен!`;
+          payload.title_tm = `Çalyşma wagty boldy!`;
+          await this.prisma.fCMToken.findMany({
+            where: {
+              NOT: [
+                {token: undefined}
+              ],
+              AND: [
+                {
+                  userId: userId
+                }
+              ]
+            }
+          }).then(async (result) => {
+            await this.notification.sendToAll(payload,result.map(item => item.token));
+          })
+          await this.prisma.costChange.updateMany({
+            where: {
+              carId: createCostDto.carId
+            },
+            data: {
+              reminder: false
+            }
+          })
+        }
+      }
+    })
     return this.prisma.costChange.findUnique({
       where: {id: res.id},
       include: {

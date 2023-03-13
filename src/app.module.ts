@@ -34,6 +34,8 @@ import { ChangeTypeModule } from './change-type/change-type.module';
 @Module({
   imports: [PrismaModule, ArticlesModule, UsersModule, CarsModule, AuthModule, CarBrandModule, ServeStaticModule.forRoot({
     rootPath: join(__dirname, '..', 'upload'),
+  }),ServeStaticModule.forRoot({
+    rootPath: join(__dirname, '..', '.well-known'),
   }), MulterModule.registerAsync({
     useFactory: () => ({
       dest: './upload'
