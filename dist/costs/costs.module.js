@@ -11,11 +11,12 @@ const common_1 = require("@nestjs/common");
 const costs_service_1 = require("./costs.service");
 const costs_controller_1 = require("./costs.controller");
 const prisma_module_1 = require("../prisma/prisma.module");
+const notification_module_1 = require("../notification/notification.module");
 let CostsModule = class CostsModule {
 };
 CostsModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
+        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
         controllers: [costs_controller_1.CostsController],
         providers: [costs_service_1.CostsService]
     })

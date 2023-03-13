@@ -3,7 +3,7 @@ import { CostChangeDto } from "./dto/cost-change.dto";
 export declare class CostsController {
     private readonly costsService;
     constructor(costsService: CostsService);
-    createChangeCost(costChangeDto: CostChangeDto): Promise<import(".prisma/client").CostChange & {
+    createChangeCost(costChangeDto: CostChangeDto, req: any): Promise<import(".prisma/client").CostChange & {
         car: import(".prisma/client").Car;
         CostToType: import(".prisma/client").CostToType[];
     }>;

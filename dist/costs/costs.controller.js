@@ -21,8 +21,8 @@ let CostsController = class CostsController {
     constructor(costsService) {
         this.costsService = costsService;
     }
-    createChangeCost(costChangeDto) {
-        return this.costsService.createChange(costChangeDto);
+    createChangeCost(costChangeDto, req) {
+        return this.costsService.createChange(costChangeDto, +req.user['userId']);
     }
     getCostsByCarId(id, type) {
         return this.costsService.getByCarId(+id, type);
@@ -41,8 +41,9 @@ __decorate([
     (0, common_1.Post)('create-cost'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [cost_change_dto_1.CostChangeDto]),
+    __metadata("design:paramtypes", [cost_change_dto_1.CostChangeDto, Object]),
     __metadata("design:returntype", void 0)
 ], CostsController.prototype, "createChangeCost", null);
 __decorate([

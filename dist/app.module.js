@@ -44,6 +44,8 @@ AppModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule, articles_module_1.ArticlesModule, users_module_1.UsersModule, cars_module_1.CarsModule, auth_module_1.AuthModule, car_brand_module_1.CarBrandModule, serve_static_1.ServeStaticModule.forRoot({
                 rootPath: (0, path_1.join)(__dirname, '..', 'upload'),
+            }), serve_static_1.ServeStaticModule.forRoot({
+                rootPath: (0, path_1.join)(__dirname, '..', '.well-known'),
             }), platform_express_1.MulterModule.registerAsync({
                 useFactory: () => ({
                     dest: './upload'

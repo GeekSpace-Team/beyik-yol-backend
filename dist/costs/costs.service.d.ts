@@ -1,9 +1,11 @@
 import { PrismaService } from "../prisma/prisma.service";
 import { CostChangeDto } from "./dto/cost-change.dto";
+import { NotificationsService } from "../notification/notification.service";
 export declare class CostsService {
     private readonly prisma;
-    constructor(prisma: PrismaService);
-    createChange(createCostDto: CostChangeDto): Promise<import(".prisma/client").CostChange & {
+    private readonly notification;
+    constructor(prisma: PrismaService, notification: NotificationsService);
+    createChange(createCostDto: CostChangeDto, userId: number): Promise<import(".prisma/client").CostChange & {
         car: import(".prisma/client").Car;
         CostToType: import(".prisma/client").CostToType[];
     }>;

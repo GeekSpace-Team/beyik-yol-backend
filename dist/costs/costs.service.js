@@ -14,11 +14,15 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const utils_1 = require("../helper/utils");
 const cost_to_type_dto_1 = require("./dto/cost-to-type.dto");
+const notification_service_1 = require("../notification/notification.service");
+const notification_dto_1 = require("../notification/dto/notification.dto");
+const client_1 = require("@prisma/client");
 let CostsService = class CostsService {
-    constructor(prisma) {
+    constructor(prisma, notification) {
         this.prisma = prisma;
+        this.notification = notification;
     }
-    async createChange(createCostDto) {
+    async createChange(createCostDto, userId) {
         let ids = createCostDto.typeIds;
         delete createCostDto.typeIds;
         let res;
@@ -45,6 +49,51 @@ let CostsService = class CostsService {
         });
         await this.prisma.costToType.createMany({
             data: costToType
+        });
+        await this.prisma.costChange.findFirst({
+            where: {
+                reminder: true,
+                costType: client_1.CostType.CHANGE,
+                carId: createCostDto.carId
+            },
+            orderBy: [
+                {
+                    createdAt: 'desc'
+                }
+            ]
+        }).then(async (result) => {
+            if (result != null) {
+                if (typeof result.id !== 'undefined' && result.id != null) {
+                    let payload = new notification_dto_1.NotificationDto();
+                    payload.url = "";
+                    payload.body_tm = `Çalyşma wagty boldy!`;
+                    payload.body_ru = `Пришло время перемен!`;
+                    payload.title_ru = `Пришло время перемен!`;
+                    payload.title_tm = `Çalyşma wagty boldy!`;
+                    await this.prisma.fCMToken.findMany({
+                        where: {
+                            NOT: [
+                                { token: undefined }
+                            ],
+                            AND: [
+                                {
+                                    userId: userId
+                                }
+                            ]
+                        }
+                    }).then(async (result) => {
+                        await this.notification.sendToAll(payload, result.map(item => item.token));
+                    });
+                    await this.prisma.costChange.updateMany({
+                        where: {
+                            carId: createCostDto.carId
+                        },
+                        data: {
+                            reminder: false
+                        }
+                    });
+                }
+            }
         });
         return this.prisma.costChange.findUnique({
             where: { id: res.id },
@@ -152,7 +201,7 @@ let CostsService = class CostsService {
 };
 CostsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, notification_service_1.NotificationsService])
 ], CostsService);
 exports.CostsService = CostsService;
 //# sourceMappingURL=costs.service.js.map
