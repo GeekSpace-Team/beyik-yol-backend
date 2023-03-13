@@ -32,10 +32,11 @@ import { CostsModule } from './costs/costs.module';
 import { ChangeTypeModule } from './change-type/change-type.module';
 
 @Module({
-  imports: [PrismaModule, ArticlesModule, UsersModule, CarsModule, AuthModule, CarBrandModule, ServeStaticModule.forRoot({
-    rootPath: join(__dirname, '..', 'upload'),
-  }),ServeStaticModule.forRoot({
+  imports: [PrismaModule, ArticlesModule, UsersModule, CarsModule, AuthModule, CarBrandModule,ServeStaticModule.forRoot({
     rootPath: join(__dirname, '..', '.well-known'),
+    serveRoot: '/.well-known'
+  }), ServeStaticModule.forRoot({
+    rootPath: join(__dirname, '..', 'upload'),
   }), MulterModule.registerAsync({
     useFactory: () => ({
       dest: './upload'
