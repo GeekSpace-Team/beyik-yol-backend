@@ -17,7 +17,7 @@ export class CarModelService {
     return this.prisma.carModel.findMany({
       orderBy: [
         {
-          createdAt: 'desc',
+          name: 'asc'
         }
       ]
     });
