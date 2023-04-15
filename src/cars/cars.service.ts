@@ -1,14 +1,29 @@
 import { Injectable } from "@nestjs/common";
 import { CreateCarDto } from "./dto/create-car.dto";
 import { PrismaService } from "../prisma/prisma.service";
+import { CreateCarImageDto } from "../car-image/dto/create-car-image.dto";
 
 @Injectable()
 export class CarsService {
   constructor(private readonly prisma: PrismaService) {}
-  create(createCarDto: CreateCarDto) {
-    return this.prisma.car.create({
+  async create(createCarDto: CreateCarDto) {
+    let res = {};
+    let image = new CreateCarImageDto();
+    await this.prisma.car.create({
       data: createCarDto
-    });
+    }).then(result=>{
+      res = result;
+      image.carId = result.id;
+      image.url = 'car_image_1.png';
+      image.status = 'ACTIVE';
+      image.type = 'NONE';
+    })
+
+
+    await this.prisma.carImage.create({
+      data: image
+    }).then(result=>{})
+    return res;
   }
 
   findAll() {
