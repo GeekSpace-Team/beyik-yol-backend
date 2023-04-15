@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "FCMToken" ALTER COLUMN "userId" DROP NOT NULL;
