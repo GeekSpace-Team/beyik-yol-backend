@@ -20,13 +20,16 @@ export class CostsService {
     let ids = createCostDto.typeIds;
     delete createCostDto.typeIds;
     let res;
-
+    const condition = {
+      reminder: true,
+      costType: CostType.CHANGE,
+      carId: createCostDto.carId,
+      nextMile: {
+        lte: createCostDto.mile
+      }
+    }
     await this.prisma.costChange.findFirst({
-      where: {
-        reminder: true,
-        costType: CostType.CHANGE,
-        carId: createCostDto.carId
-      },
+      where: condition,
       orderBy: [
         {
           createdAt: 'desc'
@@ -82,6 +85,14 @@ export class CostsService {
     }).catch(err=>{
       throw new HttpException(err.toString(),HttpStatus.FORBIDDEN);
     });
+
+    await this.prisma.costChange.updateMany({
+      where: condition,
+      data: {
+        reminder: false
+      }
+    })
+
     let costToType = ids.map(id=>{
       let cc = new CostToTypeDto();
       cc.costId = res.id;
@@ -91,6 +102,8 @@ export class CostsService {
     await this.prisma.costToType.createMany({
       data: costToType
     });
+
+
 
     return this.prisma.costChange.findUnique({
       where: {id: res.id},
