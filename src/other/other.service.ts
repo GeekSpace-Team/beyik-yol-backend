@@ -219,7 +219,7 @@ export class OtherService {
     "speakingRate": 1
   },
   "input": {
-    "text": "Привет! Добро пожаловать в наше приложение! Сегодня температура ${parseInt(temp.toString())}°С."
+    "text": "Привет! Добро пожаловать в наше приложение! Сегодня температура ${parseInt(temp.toString())}°."
   },
   "voice": {
     "languageCode": "ru-RU",
