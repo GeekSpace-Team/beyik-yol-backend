@@ -12,14 +12,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CarsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const create_car_image_dto_1 = require("../car-image/dto/create-car-image.dto");
+const utils_1 = require("../helper/utils");
 let CarsService = class CarsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    create(createCarDto) {
-        return this.prisma.car.create({
+    async create(createCarDto) {
+        let res = {};
+        let image = new create_car_image_dto_1.CreateCarImageDto();
+        await this.prisma.car.create({
             data: createCarDto
+        }).then(result => {
+            res = result;
+            image.carId = result.id;
+            image.url = `car_image_${(0, utils_1.randomIntFromInterval)(1, 3)}.png`;
+            image.status = 'ACTIVE';
+            image.type = 'NONE';
         });
+        await this.prisma.carImage.create({
+            data: image
+        }).then(result => { });
+        return res;
     }
     findAll() {
         return this.prisma.car.findMany({

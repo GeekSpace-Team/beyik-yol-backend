@@ -20,5 +20,5 @@ export declare class MobileAuthController {
     getProfile(req: any): Promise<{}>;
     editProfile(req: any, body: CreateUserDto): Promise<import(".prisma/client").Users>;
     changeImage(file: Express.Multer.File, req: any): Promise<import(".prisma/client").Users>;
-    saveFcmToken(req: any, body: SaveFcmTokenDto): import(".prisma/client").Prisma.Prisma__FCMTokenClient<import(".prisma/client").FCMToken, never>;
+    saveFcmToken(req: any, body: SaveFcmTokenDto): Promise<{}>;
 }

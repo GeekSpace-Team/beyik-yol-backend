@@ -1,10 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calcDate = exports.isNullValue = void 0;
+exports.calcDate = exports.randomIntFromInterval = exports.isNullValue = void 0;
 const isNullValue = (value) => {
     return typeof value === 'undefined' || value === null || value === '';
 };
 exports.isNullValue = isNullValue;
+function randomIntFromInterval(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+exports.randomIntFromInterval = randomIntFromInterval;
 function calcDate(date1, date2) {
     const dt_date1 = new Date(date1);
     const dt_date2 = new Date(date2);

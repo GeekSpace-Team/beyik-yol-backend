@@ -15,8 +15,8 @@ export declare class UsersService {
     update(id: number, updateUserDto: UpdateUserDto): string;
     remove(id: number): string;
     findAllFull(): Promise<(import(".prisma/client").Users & {
-        cars: import(".prisma/client").Car[];
         carShare: import(".prisma/client").CarShare[];
+        cars: import(".prisma/client").Car[];
         Events: import(".prisma/client").Events[];
         LoginHistory: import(".prisma/client").LoginHistory[];
         FCMToken: import(".prisma/client").FCMToken[];

@@ -2,6 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { CreateCarDto } from "./dto/create-car.dto";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateCarImageDto } from "../car-image/dto/create-car-image.dto";
+import { randomIntFromInterval } from "../helper/utils";
+
+
 
 @Injectable()
 export class CarsService {
@@ -14,7 +17,7 @@ export class CarsService {
     }).then(result=>{
       res = result;
       image.carId = result.id;
-      image.url = 'car_image_1.png';
+      image.url = `car_image_${randomIntFromInterval(1,3)}.png`;
       image.status = 'ACTIVE';
       image.type = 'NONE';
     })

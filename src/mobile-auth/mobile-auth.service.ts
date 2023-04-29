@@ -11,11 +11,13 @@ import { CreateUserDto } from "../users/dto/create-user.dto";
 import { JwtService } from "@nestjs/jwt";
 import * as fs from "fs";
 import { SaveFcmTokenDto } from "./dto/save-fcm-token.dto";
+import { InboxService } from "../inbox/inbox.service";
+import { CreateInboxDto } from "../inbox/dto/create-inbox.dto";
 
 @Injectable()
 export class MobileAuthService {
 
-  constructor(private readonly prisma: PrismaService, private readonly users: UsersService, private jwtService: JwtService) {
+  constructor(private readonly prisma: PrismaService, private readonly users: UsersService, private jwtService: JwtService,private readonly inbox: InboxService) {
   }
 
   async checkExisting(phone: string) {
@@ -146,30 +148,54 @@ export class MobileAuthService {
       });
       let exist = await this.checkExisting(phone);
       let res;
+      let messageTm = `Hoş geldiňiz!`;
+      let messageRu = `Добро пожаловать!`;
+      let bodyTm = ``;
+      let bodyRu = ``;
+      let userId = 0;
       if (exist) {
         await this.prisma.users.findFirst({
           where: { phonenumber: phone }
         }).then(result => {
+          bodyTm = `🔔Salam ${result.fullname}, ýenede programma dolananyňyz üçin köp sagboluň! ✨ Beýik ýol programmasy siziň işiňizi ýeňilleşdirer diýip umyt edýäris! 💡`;
+          bodyRu = `🔔Здравствуйте, ${result.fullname}! Большое спасибо, что снова заглянули в приложение! ✨ Надеемся, приложение "Beyik yol" облегчит вам работу! 💡`;
+          userId = result.id;
           res = {
             ...result,
             ...this.getToken(result.id, result.phonenumber)
           };
         });
+
       } else {
         let user = new CreateUserDto();
         user.phonenumber = phone;
         user.username = phone + "@username";
         user.password = phone + "@password";
         user.fullname = "";
+
+        bodyTm = `🔔Salam ulanyjy, biziň programmamyzy ulanmak üçin saýlap alnyňyza köp sagboluň! Programma size tötänleýin ${user.username} ulanyjy adyny berdi. 
+        Bu maglumatlary üýtgetmek üçin hasabyňyzy üýtgetmek sahypsyna geçip üýtgedip bilersiňiz! ✨ Beýik ýol programmasy siziň işiňizi ýeňilleşdirer diýip umyt edýäris! 💡`;
+        bodyRu = `🔔Здравствуйте, пользователь, спасибо, что выбрали наше приложение! Приложение дало вам случайное имя пользователя ${user.username}.
+         Чтобы изменить эту информацию, вы можете изменить ее, перейдя на страницу изменения своей учетной записи! ✨ Надеемся, приложение "Beyik yol" облегчит вам работу! 💡`;
+
         await this.prisma.users.create({
           data: user
         }).then(result => {
-          res = {
+          userId = result.id;
+            res = {
             ...result,
             ...this.getToken(result.id, result.phonenumber)
           };
         });
       }
+      let i = new CreateInboxDto();
+      i.userId = userId;
+      i.messageTm= bodyTm;
+      i.messageRu=bodyRu;
+      i.titleTm=messageTm;
+      i.titleRu=messageRu;
+      i.url='';
+      await this.inbox.sendToUser(i);
       return res;
     } else {
       throw new HttpException("FORBIDDEN", HttpStatus.FORBIDDEN);
@@ -183,6 +209,7 @@ export class MobileAuthService {
 
   async editProfile(id: number, body: CreateUserDto) {
     let oldUser;
+
     await this.prisma.users.findFirst({
       where: {id: id}
     }).then(user => {
@@ -193,6 +220,16 @@ export class MobileAuthService {
     body.username=oldUser.username;
     body.password = oldUser.password;
     body.phonenumber = oldUser.phonenumber;
+
+    let i = new CreateInboxDto();
+    i.userId = id;
+    i.messageTm= `Doglan wagtyňyz: ${oldUser.dob} -> ${body.dob}, Doly adyňyz: ${oldUser.fullname} -> ${body.fullname}`;
+    i.messageRu=`Дата рождения: ${oldUser.dob} -> ${body.dob}, Ваше полное имя: ${oldUser.fullname} -> ${body.fullname}`;
+    i.titleTm='🔔Hasabyňyz üýtgedildi ✏️';
+    i.titleRu=`🔔Ваш аккаунт был изменен ✏️`;
+    i.url='';
+    await this.inbox.sendToUser(i);
+
     return this.prisma.users.update({
       where: { id: id },
       data: body
@@ -200,6 +237,14 @@ export class MobileAuthService {
   }
 
   async changeImage(image: string, id: number) {
+    let i = new CreateInboxDto();
+    i.userId = id;
+    i.messageTm= `Siziň hasabyňyzdaky şahsy suratyňyz üýtgedi!`;
+    i.messageRu=`Изображение профиля вашей учетной записи изменилось!`;
+    i.titleTm='🔔Profil Suraty üýtgedi 🏞️';
+    i.titleRu=`🔔Изображение профиля изменено 🏞️`;
+    i.url='';
+    await this.inbox.sendToUser(i);
     await this.prisma.users.findFirst({
       where: { id: id }
     }).then(async result => {
@@ -218,11 +263,27 @@ export class MobileAuthService {
     })
   }
 
-  saveFcmToken(id: number, body: SaveFcmTokenDto) {
+  async saveFcmToken(id: number, body: SaveFcmTokenDto) {
     body.userId=id;
-    console.log(body.token)
-    return this.prisma.fCMToken.create({
+    console.log(body.token);
+    let messageTm = `Hoş geldiňiz!`;
+    let messageRu = `Добро пожаловать!`;
+    let bodyTm = `🔔Salam ulanyjy ýenede programma dolananyňyz üçin köp sagboluň! ✨ Beýik ýol programmasy siziň işiňizi ýeňilleşdirer diýip umyt edýäris! 💡`;
+    let bodyRu = `🔔Здравствуйте! Большое спасибо, что снова заглянули в приложение! ✨ Надеемся, приложение "Beyik yol" облегчит вам работу! 💡`;
+    let res = {};
+    await this.prisma.fCMToken.create({
       data: body
-    })
+    }).then((result)=>{
+      res = result;
+    });
+    let i = new CreateInboxDto();
+    i.userId = id;
+    i.messageTm= bodyTm;
+    i.messageRu=bodyRu;
+    i.titleTm=messageTm;
+    i.titleRu=messageRu;
+    i.url='';
+    await this.inbox.sendToUser(i);
+    return res;
   }
 }

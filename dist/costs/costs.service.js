@@ -26,36 +26,16 @@ let CostsService = class CostsService {
         let ids = createCostDto.typeIds;
         delete createCostDto.typeIds;
         let res;
-        await this.prisma.car.update({
-            data: {
-                lastMile: createCostDto.mile
-            },
-            where: {
-                id: createCostDto.carId
+        const condition = {
+            reminder: true,
+            costType: client_1.CostType.CHANGE,
+            carId: createCostDto.carId,
+            nextMile: {
+                lte: createCostDto.mile
             }
-        });
-        await this.prisma.costChange.create({
-            data: createCostDto
-        }).then(result => {
-            res = result;
-        }).catch(err => {
-            throw new common_1.HttpException(err.toString(), common_1.HttpStatus.FORBIDDEN);
-        });
-        let costToType = ids.map(id => {
-            let cc = new cost_to_type_dto_1.CostToTypeDto();
-            cc.costId = res.id;
-            cc.typeId = id;
-            return cc;
-        });
-        await this.prisma.costToType.createMany({
-            data: costToType
-        });
+        };
         await this.prisma.costChange.findFirst({
-            where: {
-                reminder: true,
-                costType: client_1.CostType.CHANGE,
-                carId: createCostDto.carId
-            },
+            where: condition,
             orderBy: [
                 {
                     createdAt: 'desc'
@@ -94,6 +74,36 @@ let CostsService = class CostsService {
                     });
                 }
             }
+        });
+        await this.prisma.car.update({
+            data: {
+                lastMile: createCostDto.mile
+            },
+            where: {
+                id: createCostDto.carId
+            }
+        });
+        await this.prisma.costChange.create({
+            data: createCostDto
+        }).then(result => {
+            res = result;
+        }).catch(err => {
+            throw new common_1.HttpException(err.toString(), common_1.HttpStatus.FORBIDDEN);
+        });
+        await this.prisma.costChange.updateMany({
+            where: condition,
+            data: {
+                reminder: false
+            }
+        });
+        let costToType = ids.map(id => {
+            let cc = new cost_to_type_dto_1.CostToTypeDto();
+            cc.costId = res.id;
+            cc.typeId = id;
+            return cc;
+        });
+        await this.prisma.costToType.createMany({
+            data: costToType
         });
         return this.prisma.costChange.findUnique({
             where: { id: res.id },

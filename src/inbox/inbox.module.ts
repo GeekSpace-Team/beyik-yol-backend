@@ -7,6 +7,7 @@ import { NotificationModule } from "../notification/notification.module";
 @Module({
   imports: [PrismaModule,NotificationModule],
   controllers: [InboxController],
-  providers: [InboxService]
+  providers: [InboxService],
+  exports: [InboxService]
 })
 export class InboxModule {}

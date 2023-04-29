@@ -15,11 +15,12 @@ const users_module_1 = require("../users/users.module");
 const passport_1 = require("@nestjs/passport");
 const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("../auth/constants");
+const inbox_module_1 = require("../inbox/inbox.module");
 let MobileAuthModule = class MobileAuthModule {
 };
 MobileAuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, users_module_1.UsersModule, passport_1.PassportModule,
+        imports: [prisma_module_1.PrismaModule, inbox_module_1.InboxModule, users_module_1.UsersModule, passport_1.PassportModule,
             jwt_1.JwtModule.register({
                 secret: constants_1.jwtConstants.secret
             }),],

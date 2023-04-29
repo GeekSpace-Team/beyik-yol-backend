@@ -9,58 +9,40 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CarModelService = void 0;
+exports.ObjectService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-let CarModelService = class CarModelService {
+let ObjectService = class ObjectService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    create(createCarModelDto) {
-        return this.prisma.carModel.create({
-            data: createCarModelDto
+    create(createObjectDto) {
+        return this.prisma.objects.create({
+            data: createObjectDto
         });
     }
     findAll() {
-        return this.prisma.carModel.findMany({
+        return this.prisma.objects.findMany({
             orderBy: [
                 {
-                    name: 'asc'
+                    createdAt: 'desc'
                 }
             ]
         });
     }
     findOne(id) {
-        return this.prisma.carModel.findMany({
-            where: {
-                brandId: id,
-            },
-            orderBy: [
-                {
-                    createdAt: 'desc',
-                }
-            ]
-        });
+        return `This action returns a #${id} object`;
     }
-    update(id, updateCarModelDto) {
-        return this.prisma.carModel.update({
-            where: {
-                id: id,
-            },
-            data: updateCarModelDto
-        });
+    update(id, updateObjectDto) {
+        return `This action updates a #${id} object`;
     }
     remove(id) {
-        return this.prisma.carModel.delete({
-            where: {
-                id: id,
-            }
-        });
+        return `This action removes a #${id} object`;
     }
 };
-CarModelService = __decorate([
+ObjectService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
-], CarModelService);
-exports.CarModelService = CarModelService;
-//# sourceMappingURL=car-model.service.js.map
+], ObjectService);
+exports.ObjectService = ObjectService;
+//# sourceMappingURL=object.service.js.map

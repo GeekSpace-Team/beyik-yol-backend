@@ -6,9 +6,10 @@ import { UsersModule } from "../users/users.module";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "../auth/constants";
+import { InboxModule } from "../inbox/inbox.module";
 
 @Module({
-  imports: [PrismaModule,UsersModule, PassportModule,
+  imports: [PrismaModule,InboxModule,UsersModule, PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret
     }),],

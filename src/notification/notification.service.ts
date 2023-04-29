@@ -3,9 +3,11 @@ import * as admin from 'firebase-admin';
 import { MessagingPayload } from "firebase-admin/lib/messaging";
 import { NotificationDto } from "./dto/notification.dto";
 import { MessagingOptions } from "firebase-admin/lib/messaging/messaging-api";
+import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class NotificationsService {
+
 
     async sendToAll(notification: NotificationDto, tokens: string[]){
       // const testToken=tokens;

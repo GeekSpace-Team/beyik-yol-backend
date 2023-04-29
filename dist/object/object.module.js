@@ -6,21 +6,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InboxModule = void 0;
+exports.ObjectModule = void 0;
 const common_1 = require("@nestjs/common");
-const inbox_service_1 = require("./inbox.service");
-const inbox_controller_1 = require("./inbox.controller");
+const object_service_1 = require("./object.service");
+const object_controller_1 = require("./object.controller");
 const prisma_module_1 = require("../prisma/prisma.module");
-const notification_module_1 = require("../notification/notification.module");
-let InboxModule = class InboxModule {
+let ObjectModule = class ObjectModule {
 };
-InboxModule = __decorate([
+ObjectModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
-        controllers: [inbox_controller_1.InboxController],
-        providers: [inbox_service_1.InboxService],
-        exports: [inbox_service_1.InboxService]
+        controllers: [object_controller_1.ObjectController],
+        providers: [object_service_1.ObjectService],
+        imports: [prisma_module_1.PrismaModule]
     })
-], InboxModule);
-exports.InboxModule = InboxModule;
-//# sourceMappingURL=inbox.module.js.map
+], ObjectModule);
+exports.ObjectModule = ObjectModule;
+//# sourceMappingURL=object.module.js.map

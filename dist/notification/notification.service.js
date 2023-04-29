@@ -21,7 +21,7 @@ let NotificationsService = class NotificationsService {
                 'url': notification.url
             }
         };
-        await admin.messaging().sendToDevice(testToken, payload)
+        await admin.messaging().sendToDevice(testToken.filter((tkn, i) => typeof tkn !== 'undefined' && tkn != null && tkn != "" && tkn.length > 0), payload)
             .then((value) => {
             console.log(value);
         }, (reason) => {

@@ -28,7 +28,7 @@ let CarBrandService = class CarBrandService {
         return this.prisma.carBrand.findMany({
             orderBy: [
                 {
-                    createdAt: 'desc'
+                    name: 'asc'
                 }
             ],
             include: {

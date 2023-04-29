@@ -18,11 +18,14 @@ const users_service_1 = require("../users/users.service");
 const create_user_dto_1 = require("../users/dto/create-user.dto");
 const jwt_1 = require("@nestjs/jwt");
 const fs = require("fs");
+const inbox_service_1 = require("../inbox/inbox.service");
+const create_inbox_dto_1 = require("../inbox/dto/create-inbox.dto");
 let MobileAuthService = class MobileAuthService {
-    constructor(prisma, users, jwtService) {
+    constructor(prisma, users, jwtService, inbox) {
         this.prisma = prisma;
         this.users = users;
         this.jwtService = jwtService;
+        this.inbox = inbox;
     }
     async checkExisting(phone) {
         let exist = false;
@@ -116,10 +119,18 @@ let MobileAuthService = class MobileAuthService {
             });
             let exist = await this.checkExisting(phone);
             let res;
+            let messageTm = `Hoş geldiňiz!`;
+            let messageRu = `Добро пожаловать!`;
+            let bodyTm = ``;
+            let bodyRu = ``;
+            let userId = 0;
             if (exist) {
                 await this.prisma.users.findFirst({
                     where: { phonenumber: phone }
                 }).then(result => {
+                    bodyTm = `🔔Salam ${result.fullname}, ýenede programma dolananyňyz üçin köp sagboluň! ✨ Beýik ýol programmasy siziň işiňizi ýeňilleşdirer diýip umyt edýäris! 💡`;
+                    bodyRu = `🔔Здравствуйте, ${result.fullname}! Большое спасибо, что снова заглянули в приложение! ✨ Надеемся, приложение "Beyik yol" облегчит вам работу! 💡`;
+                    userId = result.id;
                     res = Object.assign(Object.assign({}, result), this.getToken(result.id, result.phonenumber));
                 });
             }
@@ -129,12 +140,25 @@ let MobileAuthService = class MobileAuthService {
                 user.username = phone + "@username";
                 user.password = phone + "@password";
                 user.fullname = "";
+                bodyTm = `🔔Salam ulanyjy, biziň programmamyzy ulanmak üçin saýlap alnyňyza köp sagboluň! Programma size tötänleýin ${user.username} ulanyjy adyny berdi. 
+        Bu maglumatlary üýtgetmek üçin hasabyňyzy üýtgetmek sahypsyna geçip üýtgedip bilersiňiz! ✨ Beýik ýol programmasy siziň işiňizi ýeňilleşdirer diýip umyt edýäris! 💡`;
+                bodyRu = `🔔Здравствуйте, пользователь, спасибо, что выбрали наше приложение! Приложение дало вам случайное имя пользователя ${user.username}.
+         Чтобы изменить эту информацию, вы можете изменить ее, перейдя на страницу изменения своей учетной записи! ✨ Надеемся, приложение "Beyik yol" облегчит вам работу! 💡`;
                 await this.prisma.users.create({
                     data: user
                 }).then(result => {
+                    userId = result.id;
                     res = Object.assign(Object.assign({}, result), this.getToken(result.id, result.phonenumber));
                 });
             }
+            let i = new create_inbox_dto_1.CreateInboxDto();
+            i.userId = userId;
+            i.messageTm = bodyTm;
+            i.messageRu = bodyRu;
+            i.titleTm = messageTm;
+            i.titleRu = messageRu;
+            i.url = '';
+            await this.inbox.sendToUser(i);
             return res;
         }
         else {
@@ -156,12 +180,28 @@ let MobileAuthService = class MobileAuthService {
         body.username = oldUser.username;
         body.password = oldUser.password;
         body.phonenumber = oldUser.phonenumber;
+        let i = new create_inbox_dto_1.CreateInboxDto();
+        i.userId = id;
+        i.messageTm = `Doglan wagtyňyz: ${oldUser.dob} -> ${body.dob}, Doly adyňyz: ${oldUser.fullname} -> ${body.fullname}`;
+        i.messageRu = `Дата рождения: ${oldUser.dob} -> ${body.dob}, Ваше полное имя: ${oldUser.fullname} -> ${body.fullname}`;
+        i.titleTm = '🔔Hasabyňyz üýtgedildi ✏️';
+        i.titleRu = `🔔Ваш аккаунт был изменен ✏️`;
+        i.url = '';
+        await this.inbox.sendToUser(i);
         return this.prisma.users.update({
             where: { id: id },
             data: body
         });
     }
     async changeImage(image, id) {
+        let i = new create_inbox_dto_1.CreateInboxDto();
+        i.userId = id;
+        i.messageTm = `Siziň hasabyňyzdaky şahsy suratyňyz üýtgedi!`;
+        i.messageRu = `Изображение профиля вашей учетной записи изменилось!`;
+        i.titleTm = '🔔Profil Suraty üýtgedi 🏞️';
+        i.titleRu = `🔔Изображение профиля изменено 🏞️`;
+        i.url = '';
+        await this.inbox.sendToUser(i);
         await this.prisma.users.findFirst({
             where: { id: id }
         }).then(async (result) => {
@@ -180,17 +220,33 @@ let MobileAuthService = class MobileAuthService {
             }
         });
     }
-    saveFcmToken(id, body) {
+    async saveFcmToken(id, body) {
         body.userId = id;
         console.log(body.token);
-        return this.prisma.fCMToken.create({
+        let messageTm = `Hoş geldiňiz!`;
+        let messageRu = `Добро пожаловать!`;
+        let bodyTm = `🔔Salam ulanyjy ýenede programma dolananyňyz üçin köp sagboluň! ✨ Beýik ýol programmasy siziň işiňizi ýeňilleşdirer diýip umyt edýäris! 💡`;
+        let bodyRu = `🔔Здравствуйте! Большое спасибо, что снова заглянули в приложение! ✨ Надеемся, приложение "Beyik yol" облегчит вам работу! 💡`;
+        let res = {};
+        await this.prisma.fCMToken.create({
             data: body
+        }).then((result) => {
+            res = result;
         });
+        let i = new create_inbox_dto_1.CreateInboxDto();
+        i.userId = id;
+        i.messageTm = bodyTm;
+        i.messageRu = bodyRu;
+        i.titleTm = messageTm;
+        i.titleRu = messageRu;
+        i.url = '';
+        await this.inbox.sendToUser(i);
+        return res;
     }
 };
 MobileAuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService, users_service_1.UsersService, jwt_1.JwtService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, users_service_1.UsersService, jwt_1.JwtService, inbox_service_1.InboxService])
 ], MobileAuthService);
 exports.MobileAuthService = MobileAuthService;
 //# sourceMappingURL=mobile-auth.service.js.map

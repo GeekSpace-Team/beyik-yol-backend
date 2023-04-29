@@ -2,6 +2,10 @@ export const isNullValue=(value: any) => {
   return typeof value === 'undefined' || value === null || value === '';
 }
 
+export function randomIntFromInterval(min: number, max: number): number { // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
 export function calcDate(date1, date2) {
   /*
   * calcDate() : Calculates the difference between two dates
