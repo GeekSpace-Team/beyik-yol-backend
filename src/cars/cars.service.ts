@@ -3,15 +3,18 @@ import { CreateCarDto } from "./dto/create-car.dto";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateCarImageDto } from "../car-image/dto/create-car-image.dto";
 import { randomIntFromInterval } from "../helper/utils";
+import { CreateInboxDto } from "../inbox/dto/create-inbox.dto";
+import { InboxService } from "../inbox/inbox.service";
 
 
 
 @Injectable()
 export class CarsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService,private readonly inbox: InboxService) {}
   async create(createCarDto: CreateCarDto) {
     let res = {};
     let image = new CreateCarImageDto();
+
     await this.prisma.car.create({
       data: createCarDto
     }).then(result=>{
@@ -26,6 +29,16 @@ export class CarsService {
     await this.prisma.carImage.create({
       data: image
     }).then(result=>{})
+
+    let i = new CreateInboxDto();
+    i.userId = createCarDto.usersId;
+    i.messageTm= `Täze ${createCarDto.name} atly ulag döredildi!`;
+    i.messageRu=`Создан новый автомобиль под названием «${createCarDto.name}».!`;
+    i.titleTm='🔔Täze ulag döredildi🚗';
+    i.titleRu=`🔔Создан новый автомобиль🚗`;
+    i.url='';
+    await this.inbox.sendToUser(i);
+
     return res;
   }
 
@@ -81,7 +94,15 @@ export class CarsService {
     });
   }
 
-  update(id: number, updateCarDto: CreateCarDto) {
+  async update(id: number, updateCarDto: CreateCarDto) {
+    let i = new CreateInboxDto();
+    i.userId = updateCarDto.usersId;
+    i.messageTm= `${updateCarDto.name} atly ulag üýtgedildi!`;
+    i.messageRu=`Автомобиль с именем "${updateCarDto.name}" был изменен!`;
+    i.titleTm='🔔Ulag üýtgedildi🚗';
+    i.titleRu=`🔔Автомобиль был модифицирован🚗`;
+    i.url='';
+    await this.inbox.sendToUser(i);
     return this.prisma.car.update({
       data: updateCarDto,
       where:{
@@ -103,10 +124,14 @@ export class CarsService {
         result.push(res)
       })
     }
+
+
+
     return result;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+
     return this.prisma.car.delete({
       where:{
         id:id

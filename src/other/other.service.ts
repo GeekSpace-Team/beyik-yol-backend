@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   Device,
   LoginLogType,
@@ -16,17 +16,19 @@ import {
   ConstantTypes,
   CostType
 } from "@prisma/client";
-import { CreateOtherDto } from './dto/create-other.dto';
-import { UpdateOtherDto } from './dto/update-other.dto';
+import { CreateOtherDto } from "./dto/create-other.dto";
+import { UpdateOtherDto } from "./dto/update-other.dto";
 import { PrismaModule } from "../prisma/prisma.module";
 import { AuthService } from "../auth/auth.service";
 import { PrismaService } from "../prisma/prisma.service";
 import { CarsService } from "../cars/cars.service";
+import axios from "axios";
 
 @Injectable()
 export class OtherService {
-  constructor(private readonly prisma: PrismaService, private readonly auth: AuthService,private readonly carService: CarsService) {
+  constructor(private readonly prisma: PrismaService, private readonly auth: AuthService, private readonly carService: CarsService) {
   }
+
   findAll() {
     return {
       device: Object.keys(Device),
@@ -43,7 +45,7 @@ export class OtherService {
       imageType: Object.keys(ImageType),
       permissions: Object.keys(Permissions),
       constantType: Object.keys(ConstantTypes),
-      costType: Object.keys(CostType),
+      costType: Object.keys(CostType)
     };
   }
 
@@ -54,114 +56,115 @@ export class OtherService {
       await this.auth.getUser(token)
         .then((user) => {
           userId = user.sub;
-        })
-    } catch (err) {}
+        });
+    } catch (err) {
+    }
     await this.prisma.ads.findMany({
       where: {
-        adsType: 'BANNER',
-        status: 'ACTIVE'
+        adsType: "BANNER",
+        status: "ACTIVE"
       },
       orderBy: [
         {
-          index: 'desc'
+          index: "desc"
         },
         {
-          createdAt: 'desc'
+          createdAt: "desc"
         }
       ],
       include: {
         adsImage: true
       }
-    }).then(result=>{
-      res={
+    }).then(result => {
+      res = {
         banner: result
-      }
+      };
     });
     await this.prisma.ads.findFirst({
       where: {
-        adsType: 'POPUP',
-        status: 'ACTIVE'
+        adsType: "POPUP",
+        status: "ACTIVE"
       },
       orderBy: [
         {
-          index: 'desc'
+          index: "desc"
         },
         {
-          createdAt: 'desc'
+          createdAt: "desc"
         }
       ],
       include: {
         adsImage: true
       }
-    }).then(result=>{
-      res={
+    }).then(result => {
+      res = {
         ...res,
         popup: result
-      }
+      };
     });
     await this.prisma.ads.findMany({
       where: {
         OR: [
           {
-            adsType: 'HOME_LARGE'
+            adsType: "HOME_LARGE"
           },
           {
-            adsType: 'HOME_MINI'
+            adsType: "HOME_MINI"
           }
         ],
         AND: [
           {
-            status: 'ACTIVE'
+            status: "ACTIVE"
           }
         ]
       },
       orderBy: [
         {
-          index: 'desc'
+          index: "desc"
         },
         {
-          createdAt: 'desc'
+          createdAt: "desc"
         }
       ],
       include: {
         adsImage: true
       }
-    }).then(result=>{
+    }).then(result => {
       res = {
         ...res,
         ads: result
-      }
+      };
     });
-    if(userId!=0){
+    if (userId != 0) {
       await this.prisma.inbox.findMany({
         where: {
           userId: userId,
           isRead: false
         },
         orderBy: {
-          createdAt: 'desc'
+          createdAt: "desc"
         }
-      }).then(result=>{
+      }).then(result => {
         res = {
           ...res,
           inboxCount: result.length
-        }
-      })
+        };
+      });
 
-      await this.carService.getUserCars(userId).then(result=>{
+      await this.carService.getUserCars(userId).then(result => {
         res = {
           ...res,
           cars: result
-        }
-      })
+        };
+      });
       await this.prisma.users.findUnique({
-        where: {id: userId}
-      }).then(result =>{
+        where: { id: userId }
+      }).then(result => {
         res = {
           ...res,
           user: result
-        }
-      })
+        };
+      });
     }
 
     await this.prisma.constantPrices.findMany({
@@ -178,12 +181,71 @@ export class OtherService {
           }
         ]
       }
-    }).then(result =>{
+    }).then(result => {
       res = {
         ...res,
         fuel_price: result
+      };
+    });
+
+    let isTTS = false;
+    let temp = 0;
+    await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=Ashgabat&appid=a2fe4fb63c29aa32f8e3c254e9cbde16&units=metric`)
+      .then(response => {
+        res = {
+          ...res,
+          weatherInfo: response.data
+        };
+        try {
+          temp = Number(response.data.main.temp);
+        } catch (err) {
+        }
+        isTTS = true;
+      }).catch(err => {
+        res = {
+          ...res,
+          weatherInfo: null
+        };
+      });
+
+    if (isTTS) {
+      let tts = `{
+  "audioConfig": {
+    "audioEncoding": "LINEAR16",
+    "effectsProfileId": [
+      "handset-class-device"
+    ],
+    "pitch": 0,
+    "speakingRate": 1
+  },
+  "input": {
+    "text": "Привет! Добро пожаловать в наше приложение! Сегодня температура ${parseInt(temp.toString())}°С."
+  },
+  "voice": {
+    "languageCode": "ru-RU",
+    "name": "ru-RU-Wavenet-B"
+  }
+}`;
+
+      await axios.post(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=AIzaSyDJy-_ydiaAH6z2A0exJETzhKDlUhX7vyE`, JSON.parse(tts))
+        .then(response => {
+          res={
+            ...res,
+            tts: response.data
+          }
+        })
+        .catch(err => {
+          res={
+            ...res,
+            tts: null
+          }
+        });
+    } else {
+      res={
+        ...res,
+        tts: null
       }
-    })
+    }
 
     return res;
   }

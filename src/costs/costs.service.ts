@@ -11,10 +11,12 @@ import { CostToTypeDto } from "./dto/cost-to-type.dto";
 import { NotificationsService } from "../notification/notification.service";
 import { NotificationDto } from "../notification/dto/notification.dto";
 import { CostType } from "@prisma/client";
+import { CreateInboxDto } from "../inbox/dto/create-inbox.dto";
+import { InboxService } from "../inbox/inbox.service";
 
 @Injectable()
 export class CostsService {
-  constructor(private readonly prisma: PrismaService,private readonly notification: NotificationsService){}
+  constructor(private readonly prisma: PrismaService,private readonly notification: NotificationsService,private readonly inbox: InboxService){}
 
   async createChange(createCostDto: CostChangeDto,userId: number) {
     let ids = createCostDto.typeIds;
@@ -102,6 +104,15 @@ export class CostsService {
     await this.prisma.costToType.createMany({
       data: costToType
     });
+
+    let i = new CreateInboxDto();
+    i.userId = userId;
+    i.messageTm= `Geçen ýoly ${createCostDto.mile} km!`;
+    i.messageRu=`Проезд автомобиля ${createCostDto.mile} km`;
+    i.titleTm='🔔Çykdaýjy hasaba alyndy💹🚗';
+    i.titleRu=`🔔Стоимость создана🚗`;
+    i.url='';
+    await this.inbox.sendToUser(i);
 
 
 
