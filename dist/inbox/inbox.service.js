@@ -46,6 +46,7 @@ let InboxService = class InboxService {
         payload.body_ru = createInboxDto.messageRu;
         payload.title_ru = createInboxDto.titleRu;
         payload.title_tm = createInboxDto.titleTm;
+        console.log(payload);
         await this.prisma.fCMToken.findMany({
             where: {
                 NOT: [
