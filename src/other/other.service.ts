@@ -49,7 +49,7 @@ export class OtherService {
     };
   }
 
-  async getHome(token: string) {
+  async getHome(token: string, isSend: Boolean = true) {
     let res = {};
     let userId = 0;
     try {
@@ -188,63 +188,71 @@ export class OtherService {
       };
     });
 
-    let isTTS = false;
-    let temp = 0;
-    await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=Ashgabat&appid=a2fe4fb63c29aa32f8e3c254e9cbde16&units=metric`)
-      .then(response => {
-        res = {
-          ...res,
-          weatherInfo: response.data
-        };
-        try {
-          temp = Number(response.data.main.temp);
-        } catch (err) {
-        }
-        isTTS = true;
-      }).catch(err => {
-        res = {
-          ...res,
-          weatherInfo: null
-        };
-      });
-
-    if (isTTS) {
-      let tts = `{
-  "audioConfig": {
-    "audioEncoding": "LINEAR16",
-    "effectsProfileId": [
-      "handset-class-device"
-    ],
-    "pitch": 0,
-    "speakingRate": 1
-  },
-  "input": {
-    "text": "Привет! Добро пожаловать в наше приложение! Сегодня температура ${parseInt(temp.toString())}°."
-  },
-  "voice": {
-    "languageCode": "ru-RU",
-    "name": "ru-RU-Wavenet-B"
-  }
-}`;
-
-      await axios.post(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=AIzaSyDJy-_ydiaAH6z2A0exJETzhKDlUhX7vyE`, JSON.parse(tts))
+    if (isSend) {
+      let isTTS = false;
+      let temp = 0;
+      await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=Ashgabat&appid=a2fe4fb63c29aa32f8e3c254e9cbde16&units=metric`)
         .then(response => {
-          res={
+          res = {
             ...res,
-            tts: response.data
+            weatherInfo: response.data
+          };
+          try {
+            temp = Number(response.data.main.temp);
+          } catch (err) {
           }
-        })
-        .catch(err => {
-          res={
+          isTTS = true;
+        }).catch(err => {
+          res = {
             ...res,
-            tts: null
-          }
+            weatherInfo: null
+          };
         });
-    } else {
-      res={
-        ...res,
-        tts: null
+
+      if (isTTS) {
+        let tts = `{
+          "audioConfig": {
+            "audioEncoding": "LINEAR16",
+            "effectsProfileId": [
+              "handset-class-device"
+            ],
+            "pitch": 0,
+            "speakingRate": 1
+          },
+          "input": {
+            "text": "Привет! Добро пожаловать в наше приложение! Сегодня температура ${parseInt(temp.toString())}°."
+          },
+          "voice": {
+            "languageCode": "ru-RU",
+            "name": "ru-RU-Wavenet-B"
+          }
+        }`;
+
+        await axios.post(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=AIzaSyDJy-_ydiaAH6z2A0exJETzhKDlUhX7vyE`, JSON.parse(tts))
+          .then(response => {
+            res = {
+              ...res,
+              tts: response.data
+            };
+          })
+          .catch(err => {
+            res = {
+              ...res,
+              tts: null
+            };
+          });
+      } else {
+        res = {
+          ...res,
+          tts: null
+        };
       }
+    } else {
+      res = {
+        ...res,
+        tts: null,
+        weatherInfo: null
+      };
     }
 
     return res;
