@@ -17,10 +17,13 @@ const cost_to_type_dto_1 = require("./dto/cost-to-type.dto");
 const notification_service_1 = require("../notification/notification.service");
 const notification_dto_1 = require("../notification/dto/notification.dto");
 const client_1 = require("@prisma/client");
+const create_inbox_dto_1 = require("../inbox/dto/create-inbox.dto");
+const inbox_service_1 = require("../inbox/inbox.service");
 let CostsService = class CostsService {
-    constructor(prisma, notification) {
+    constructor(prisma, notification, inbox) {
         this.prisma = prisma;
         this.notification = notification;
+        this.inbox = inbox;
     }
     async createChange(createCostDto, userId) {
         let ids = createCostDto.typeIds;
@@ -105,6 +108,14 @@ let CostsService = class CostsService {
         await this.prisma.costToType.createMany({
             data: costToType
         });
+        let i = new create_inbox_dto_1.CreateInboxDto();
+        i.userId = userId;
+        i.messageTm = `Geçen ýoly ${createCostDto.mile} km!`;
+        i.messageRu = `Проезд автомобиля ${createCostDto.mile} km`;
+        i.titleTm = '🔔Çykdaýjy hasaba alyndy💹🚗';
+        i.titleRu = `🔔Стоимость создана🚗`;
+        i.url = '';
+        await this.inbox.sendToUser(i);
         return this.prisma.costChange.findUnique({
             where: { id: res.id },
             include: {
@@ -211,7 +222,7 @@ let CostsService = class CostsService {
 };
 CostsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService, notification_service_1.NotificationsService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, notification_service_1.NotificationsService, inbox_service_1.InboxService])
 ], CostsService);
 exports.CostsService = CostsService;
 //# sourceMappingURL=costs.service.js.map

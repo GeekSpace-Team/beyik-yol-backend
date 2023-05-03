@@ -188,7 +188,9 @@ export class OtherService {
       };
     });
 
-    if (isSend) {
+    console.log(isSend);
+
+    if (isSend==true) {
       let isTTS = false;
       let temp = 0;
       await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=Ashgabat&appid=a2fe4fb63c29aa32f8e3c254e9cbde16&units=metric`)

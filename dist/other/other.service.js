@@ -15,6 +15,7 @@ const client_1 = require("@prisma/client");
 const auth_service_1 = require("../auth/auth.service");
 const prisma_service_1 = require("../prisma/prisma.service");
 const cars_service_1 = require("../cars/cars.service");
+const axios_1 = require("axios");
 let OtherService = class OtherService {
     constructor(prisma, auth, carService) {
         this.prisma = prisma;
@@ -37,10 +38,10 @@ let OtherService = class OtherService {
             imageType: Object.keys(client_1.ImageType),
             permissions: Object.keys(client_1.Permissions),
             constantType: Object.keys(client_1.ConstantTypes),
-            costType: Object.keys(client_1.CostType),
+            costType: Object.keys(client_1.CostType)
         };
     }
-    async getHome(token) {
+    async getHome(token, isSend = true) {
         let res = {};
         let userId = 0;
         try {
@@ -49,18 +50,19 @@ let OtherService = class OtherService {
                 userId = user.sub;
             });
         }
-        catch (err) { }
+        catch (err) {
+        }
         await this.prisma.ads.findMany({
             where: {
-                adsType: 'BANNER',
-                status: 'ACTIVE'
+                adsType: "BANNER",
+                status: "ACTIVE"
             },
             orderBy: [
                 {
-                    index: 'desc'
+                    index: "desc"
                 },
                 {
-                    createdAt: 'desc'
+                    createdAt: "desc"
                 }
             ],
             include: {
@@ -73,15 +75,15 @@ let OtherService = class OtherService {
         });
         await this.prisma.ads.findFirst({
             where: {
-                adsType: 'POPUP',
-                status: 'ACTIVE'
+                adsType: "POPUP",
+                status: "ACTIVE"
             },
             orderBy: [
                 {
-                    index: 'desc'
+                    index: "desc"
                 },
                 {
-                    createdAt: 'desc'
+                    createdAt: "desc"
                 }
             ],
             include: {
@@ -94,24 +96,24 @@ let OtherService = class OtherService {
             where: {
                 OR: [
                     {
-                        adsType: 'HOME_LARGE'
+                        adsType: "HOME_LARGE"
                     },
                     {
-                        adsType: 'HOME_MINI'
+                        adsType: "HOME_MINI"
                     }
                 ],
                 AND: [
                     {
-                        status: 'ACTIVE'
+                        status: "ACTIVE"
                     }
                 ]
             },
             orderBy: [
                 {
-                    index: 'desc'
+                    index: "desc"
                 },
                 {
-                    createdAt: 'desc'
+                    createdAt: "desc"
                 }
             ],
             include: {
@@ -127,7 +129,7 @@ let OtherService = class OtherService {
                     isRead: false
                 },
                 orderBy: {
-                    createdAt: 'desc'
+                    createdAt: "desc"
                 }
             }).then(result => {
                 res = Object.assign(Object.assign({}, res), { inboxCount: result.length });
@@ -158,6 +160,55 @@ let OtherService = class OtherService {
         }).then(result => {
             res = Object.assign(Object.assign({}, res), { fuel_price: result });
         });
+        console.log(isSend);
+        if (isSend == true) {
+            let isTTS = false;
+            let temp = 0;
+            await axios_1.default.get(`https://api.openweathermap.org/data/2.5/weather?q=Ashgabat&appid=a2fe4fb63c29aa32f8e3c254e9cbde16&units=metric`)
+                .then(response => {
+                res = Object.assign(Object.assign({}, res), { weatherInfo: response.data });
+                try {
+                    temp = Number(response.data.main.temp);
+                }
+                catch (err) {
+                }
+                isTTS = true;
+            }).catch(err => {
+                res = Object.assign(Object.assign({}, res), { weatherInfo: null });
+            });
+            if (isTTS) {
+                let tts = `{
+          "audioConfig": {
+            "audioEncoding": "LINEAR16",
+            "effectsProfileId": [
+              "handset-class-device"
+            ],
+            "pitch": 0,
+            "speakingRate": 1
+          },
+          "input": {
+            "text": "Привет! Добро пожаловать в наше приложение! Сегодня температура ${parseInt(temp.toString())}°."
+          },
+          "voice": {
+            "languageCode": "ru-RU",
+            "name": "ru-RU-Wavenet-B"
+          }
+        }`;
+                await axios_1.default.post(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=AIzaSyDJy-_ydiaAH6z2A0exJETzhKDlUhX7vyE`, JSON.parse(tts))
+                    .then(response => {
+                    res = Object.assign(Object.assign({}, res), { tts: response.data });
+                })
+                    .catch(err => {
+                    res = Object.assign(Object.assign({}, res), { tts: null });
+                });
+            }
+            else {
+                res = Object.assign(Object.assign({}, res), { tts: null });
+            }
+        }
+        else {
+            res = Object.assign(Object.assign({}, res), { tts: null, weatherInfo: null });
+        }
         return res;
     }
 };

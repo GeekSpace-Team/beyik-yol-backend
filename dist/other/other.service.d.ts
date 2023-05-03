@@ -23,5 +23,5 @@ export declare class OtherService {
         constantType: string[];
         costType: string[];
     };
-    getHome(token: string): Promise<{}>;
+    getHome(token: string, isSend?: Boolean): Promise<{}>;
 }

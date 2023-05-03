@@ -22,13 +22,13 @@ let OtherController = class OtherController {
     findAll() {
         return this.otherService.findAll();
     }
-    getHome(req) {
+    getHome(req, isSend) {
         let token = req.headers['authorization'];
         try {
             token = token.split(' ')[1];
         }
         catch (err) { }
-        return this.otherService.getHome(token);
+        return this.otherService.getHome(token, isSend);
     }
 };
 __decorate([
@@ -40,8 +40,9 @@ __decorate([
 __decorate([
     (0, common_1.Get)('get-home'),
     __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Query)('isSend')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Boolean]),
     __metadata("design:returntype", void 0)
 ], OtherController.prototype, "getHome", null);
 OtherController = __decorate([

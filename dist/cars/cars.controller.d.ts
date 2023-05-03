@@ -48,7 +48,7 @@ export declare class CarsController {
         CarView: import(".prisma/client").CarView[];
     }, never>;
     getAddCarDetails(): Promise<{}>;
-    update(id: string, updateCarDto: CreateCarDto): import(".prisma/client").Prisma.Prisma__CarClient<import(".prisma/client").Car, never>;
+    update(id: string, updateCarDto: CreateCarDto): Promise<import(".prisma/client").Car>;
     updateUserCars(req: any, updateCarDto: CreateCarDto[]): Promise<any[]>;
-    remove(id: string): import(".prisma/client").Prisma.Prisma__CarClient<import(".prisma/client").Car, never>;
+    remove(id: string): Promise<import(".prisma/client").Car>;
 }

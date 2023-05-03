@@ -19,5 +19,5 @@ export declare class OtherController {
         constantType: string[];
         costType: string[];
     };
-    getHome(req: any): Promise<{}>;
+    getHome(req: any, isSend: Boolean): Promise<{}>;
 }

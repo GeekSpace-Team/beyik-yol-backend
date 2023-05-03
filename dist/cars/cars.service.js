@@ -14,9 +14,12 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const create_car_image_dto_1 = require("../car-image/dto/create-car-image.dto");
 const utils_1 = require("../helper/utils");
+const create_inbox_dto_1 = require("../inbox/dto/create-inbox.dto");
+const inbox_service_1 = require("../inbox/inbox.service");
 let CarsService = class CarsService {
-    constructor(prisma) {
+    constructor(prisma, inbox) {
         this.prisma = prisma;
+        this.inbox = inbox;
     }
     async create(createCarDto) {
         let res = {};
@@ -33,6 +36,14 @@ let CarsService = class CarsService {
         await this.prisma.carImage.create({
             data: image
         }).then(result => { });
+        let i = new create_inbox_dto_1.CreateInboxDto();
+        i.userId = createCarDto.usersId;
+        i.messageTm = `Täze ${createCarDto.name} atly ulag döredildi!`;
+        i.messageRu = `Создан новый автомобиль под названием «${createCarDto.name}».!`;
+        i.titleTm = '🔔Täze ulag döredildi🚗';
+        i.titleRu = `🔔Создан новый автомобиль🚗`;
+        i.url = '';
+        await this.inbox.sendToUser(i);
         return res;
     }
     findAll() {
@@ -85,7 +96,15 @@ let CarsService = class CarsService {
             }
         });
     }
-    update(id, updateCarDto) {
+    async update(id, updateCarDto) {
+        let i = new create_inbox_dto_1.CreateInboxDto();
+        i.userId = updateCarDto.usersId;
+        i.messageTm = `${updateCarDto.name} atly ulag üýtgedildi!`;
+        i.messageRu = `Автомобиль с именем "${updateCarDto.name}" был изменен!`;
+        i.titleTm = '🔔Ulag üýtgedildi🚗';
+        i.titleRu = `🔔Автомобиль был модифицирован🚗`;
+        i.url = '';
+        await this.inbox.sendToUser(i);
         return this.prisma.car.update({
             data: updateCarDto,
             where: {
@@ -109,7 +128,7 @@ let CarsService = class CarsService {
         }
         return result;
     }
-    remove(id) {
+    async remove(id) {
         return this.prisma.car.delete({
             where: {
                 id: id
@@ -159,7 +178,7 @@ let CarsService = class CarsService {
 };
 CarsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService, inbox_service_1.InboxService])
 ], CarsService);
 exports.CarsService = CarsService;
 //# sourceMappingURL=cars.service.js.map
