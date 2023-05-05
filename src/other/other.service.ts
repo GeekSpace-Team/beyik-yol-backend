@@ -26,6 +26,10 @@ import axios from "axios";
 
 @Injectable()
 export class OtherService {
+
+  backupWeather: any = null;
+  backupTTS: any = null;
+
   constructor(private readonly prisma: PrismaService, private readonly auth: AuthService, private readonly carService: CarsService) {
   }
 
@@ -48,6 +52,8 @@ export class OtherService {
       costType: Object.keys(CostType)
     };
   }
+
+
 
   async getHome(token: string, isSend: Boolean = true) {
     let res = {};
@@ -191,12 +197,13 @@ export class OtherService {
     if (`${isSend}`==='true') {
       let isTTS = false;
       let temp = 0;
-      await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=Ashgabat&appid=a2fe4fb63c29aa32f8e3c254e9cbde16&units=metric`)
+      await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=Ashgabat&appid=a2fe4fb63c29aa32f8e3c254e9cbde16&units=metric&lang=ru`)
         .then(response => {
           res = {
             ...res,
             weatherInfo: response.data
           };
+          this.backupWeather = response.data;
           try {
             temp = Number(response.data.main.temp);
           } catch (err) {
@@ -234,6 +241,7 @@ export class OtherService {
               ...res,
               tts: response.data
             };
+            this.backupTTS = response.data;
           })
           .catch(err => {
             res = {
@@ -250,8 +258,8 @@ export class OtherService {
     } else {
       res = {
         ...res,
-        tts: null,
-        weatherInfo: null
+        tts: this.backupTTS,
+        weatherInfo: this.backupWeather
       };
     }
 
