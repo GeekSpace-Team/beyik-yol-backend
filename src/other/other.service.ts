@@ -1,4 +1,12 @@
+import axios from "axios";
 import { Injectable } from "@nestjs/common";
+import { AuthService } from "../auth/auth.service";
+import { CarsService } from "../cars/cars.service";
+import { PrismaModule } from "../prisma/prisma.module";
+import { PrismaService } from "../prisma/prisma.service";
+import { CreateOtherDto } from "./dto/create-other.dto";
+import { UpdateOtherDto } from "./dto/update-other.dto";
+
 import {
   Device,
   LoginLogType,
@@ -16,13 +24,6 @@ import {
   ConstantTypes,
   CostType
 } from "@prisma/client";
-import { CreateOtherDto } from "./dto/create-other.dto";
-import { UpdateOtherDto } from "./dto/update-other.dto";
-import { PrismaModule } from "../prisma/prisma.module";
-import { AuthService } from "../auth/auth.service";
-import { PrismaService } from "../prisma/prisma.service";
-import { CarsService } from "../cars/cars.service";
-import axios from "axios";
 
 @Injectable()
 export class OtherService {
@@ -194,74 +195,74 @@ export class OtherService {
       };
     });
 
-    if (`${isSend}`==='true') {
-      let isTTS = false;
-      let temp = 0;
-      await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=Ashgabat&appid=a2fe4fb63c29aa32f8e3c254e9cbde16&units=metric&lang=ru`)
-        .then(response => {
-          res = {
-            ...res,
-            weatherInfo: response.data
-          };
-          this.backupWeather = response.data;
-          try {
-            temp = Number(response.data.main.temp);
-          } catch (err) {
-          }
-          isTTS = true;
-        }).catch(err => {
-          res = {
-            ...res,
-            weatherInfo: null
-          };
-        });
+    // if (`${isSend}`==='true') {
+    //   let isTTS = false;
+    //   let temp = 0;
+    //   await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=Ashgabat&appid=a2fe4fb63c29aa32f8e3c254e9cbde16&units=metric&lang=ru`)
+    //     .then(response => {
+    //       res = {
+    //         ...res,
+    //         weatherInfo: response.data
+    //       };
+    //       this.backupWeather = response.data;
+    //       try {
+    //         temp = Number(response.data.main.temp);
+    //       } catch (err) {
+    //       }
+    //       isTTS = true;
+    //     }).catch(err => {
+    //       res = {
+    //         ...res,
+    //         weatherInfo: null
+    //       };
+    //     });
 
-      if (isTTS) {
-        let tts = `{
-          "audioConfig": {
-            "audioEncoding": "LINEAR16",
-            "effectsProfileId": [
-              "handset-class-device"
-            ],
-            "pitch": 0,
-            "speakingRate": 1
-          },
-          "input": {
-            "text": "Привет! Добро пожаловать в наше приложение! Сегодня температура ${parseInt(temp.toString())}°."
-          },
-          "voice": {
-            "languageCode": "ru-RU",
-            "name": "ru-RU-Wavenet-B"
-          }
-        }`;
+    //   if (isTTS) {
+    //     let tts = `{
+    //       "audioConfig": {
+    //         "audioEncoding": "LINEAR16",
+    //         "effectsProfileId": [
+    //           "handset-class-device"
+    //         ],
+    //         "pitch": 0,
+    //         "speakingRate": 1
+    //       },
+    //       "input": {
+    //         "text": "Привет! Добро пожаловать в наше приложение! Сегодня температура ${parseInt(temp.toString())}°."
+    //       },
+    //       "voice": {
+    //         "languageCode": "ru-RU",
+    //         "name": "ru-RU-Wavenet-B"
+    //       }
+    //     }`;
 
-        await axios.post(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=AIzaSyDJy-_ydiaAH6z2A0exJETzhKDlUhX7vyE`, JSON.parse(tts))
-          .then(response => {
-            res = {
-              ...res,
-              tts: response.data
-            };
-            this.backupTTS = response.data;
-          })
-          .catch(err => {
-            res = {
-              ...res,
-              tts: null
-            };
-          });
-      } else {
-        res = {
-          ...res,
-          tts: null
-        };
-      }
-    } else {
+    //     await axios.post(`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=AIzaSyDJy-_ydiaAH6z2A0exJETzhKDlUhX7vyE`, JSON.parse(tts))
+    //       .then(response => {
+    //         res = {
+    //           ...res,
+    //           tts: response.data
+    //         };
+    //         this.backupTTS = response.data;
+    //       })
+    //       .catch(err => {
+    //         res = {
+    //           ...res,
+    //           tts: null
+    //         };
+    //       });
+    //   } else {
+    //     res = {
+    //       ...res,
+    //       tts: null
+    //     };
+    //   }
+    // } else {
       res = {
         ...res,
         tts: this.backupTTS,
         weatherInfo: this.backupWeather
       };
-    }
+    // }
 
     return res;
   }
